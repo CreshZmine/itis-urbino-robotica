@@ -34,15 +34,22 @@ def dist((x0,y0),(x1,y1)):
     dy =y1-y0
     return tp(dx,dy)
 
-def sensore(x0,y0,dx,dy):
-    d = tp(dx,dy)
-    i = 1.0
-    lista.append((x0,y0))
-    while i < 200:
-        lista.append((x0+dx*i/d,y0+dy*i/d))
-        i=i+2.0
-    lista.append((x1,y1))
-
+def sensore(tx, ty, dx, dy):
+    print "sensore"
+    startx=tx
+    starty=ty
+    mindist = 200
+    minpoint = (0,0)
+    while abs(tx-startx)<100 and abs(ty-starty)<100 :
+        for p in lista :
+            if distanza(p,(tx,ty))<20 :
+                if mindist > distanza(p,(robo.x,robo.y)) :
+                    mindist = distanza(p,(robo.x,robo.y))
+                    minpoint = p
+        tx += dx
+        ty += dy
+    listaraggi = [ minpoint ]
+    return str(mindist)
 
 
 linea(a ,a ,a ,b)
@@ -139,27 +146,19 @@ def handler2(clientsock,addr):
                     robo.ruota(1.57)
                     risposta = "ok"
                 else:
-                    if data[0] == 's' and data[1] == 0:
-                        #sensore 0 : distanza avanti
-                        # x e y temporanee
-                        print "sensore"
-                        tx=robo.x
-                        ty=robo.y
-                        startx=tx
-                        starty=ty
-                        mindist = 200
-                        minpoint = (0,0)
-                        while abs(tx-startx)<100 and abs(ty-starty)<100 :
-                            for p in lista :
-                                if distanza(p,(tx,ty))<20 :
-                                    if mindist > distanza(p,(robo.x,robo.y)) :
-                                        mindist = distanza(p,(robo.x,robo.y))
-                                        minpoint = p
-                            tx += robo.dx
-                            ty += robo.dy
-                        risposta = str(mindist)
-                        print "rispondo a sensore: ", risposta
-                        listaraggi = [ minpoint ]
+                    if data[0] == 's':
+                        if data[1] == 0:
+                            #sensore 0 : distanza avanti
+                            risposta = sensore(robo.x, robo.y, robo.dx, robo.dy)
+                        if data[1] == 1:
+                            #sensore 1 : distanza sinistra
+                            risposta = sensore(robo.x, robo.y, -robo.dy, robo.dx)
+                        if data[1] == 2:
+                            #sensore 1 : distanza destra
+                            risposta = sensore(robo.x, robo.y, robo.dy, -robo.dx)
+                        if data[1] == 3:
+                            #sensore 3 : distanza dietro
+                            risposta = sensore(robo.x, robo.y, -robo.dx, -robo.dy)
 
         clientsock.send(risposta)
         time.sleep(0.6)
