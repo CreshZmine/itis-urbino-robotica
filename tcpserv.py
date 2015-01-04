@@ -145,9 +145,11 @@ def handler2(clientsock,addr):
                         print "sensore"
                         tx=robo.x
                         ty=robo.y
+                        startx=tx
+                        starty=ty
                         mindist = 200
                         minpoint = (0,0)
-                        while tx<100 and ty<100 :
+                        while abs(tx-startx)<100 and abs(ty-starty)<100 :
                             for p in lista :
                                 if distanza(p,(tx,ty))<20 :
                                     if mindist > distanza(p,(robo.x,robo.y)) :
