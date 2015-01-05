@@ -12,7 +12,7 @@ def parseMapFile(map_path):
             line = line.split()
             if len(line) == 0:
                 continue
-            if line[0] == '#':
+            if line[0][0] == '#':
                 continue
             if line[0] == 'l':
                 dx =float(line[3])-float(line[1])
