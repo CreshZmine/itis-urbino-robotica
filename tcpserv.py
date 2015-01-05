@@ -29,7 +29,7 @@ def linea(x0,y0,x1,y1):
         i=i+10
     lista.append((x1,y1))
         
-def dist((x0,y0),(x1,y1)):
+def distanza((x0,y0),(x1,y1)):
     dx =x1-x0
     dy =y1-y0
     return tp(dx,dy)
