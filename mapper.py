@@ -13,9 +13,9 @@ def parseMapFile(map_path):
             line = line.split()
             if len(line) == 0:
                 continue
-            if line[0][0] == '#':
+            elif line[0][0] == '#':
                 continue
-            if line[0] == 'l': #Disegna una linea
+            elif line[0] == 'l': #Disegna una linea
                 dx =float(line[3])-float(line[1])
                 dy =float(line[4])-float(line[2])
                 d = tp(dx,dy)
@@ -25,7 +25,7 @@ def parseMapFile(map_path):
                     map.append((float(line[1])+dx*i/d,float(line[2])+dy*i/d))
                     i=i+10
                 map.append((float(line[3]),float(line[4])))
-            if line[0] == 'r': #Posizione del robot
+            elif line[0] == 'r': #Posizione del robot
                 robotPos[0] = float(line[1])
                 robotPos[1] = float(line[2])
             else:
