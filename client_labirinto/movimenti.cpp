@@ -20,5 +20,8 @@ int sensore(int sd, char sens_id)
 	char sens[3] = "s";
 	sens[1] = sens_id;
 	sens[2] = 0;
-	return Chiedo(sd, sens);
+	int res;
+	send_l(sd, sens, 3);
+	recv(sd, &res, sizeof(res), 0);
+	return res;
 }

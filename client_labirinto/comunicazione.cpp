@@ -15,6 +15,10 @@ void Send(int sd, const char *msg)
     
 }
 
+void send_l (int sd, const char *msg, ssize_t len)
+{
+	send(sd, msg, len, 0);
+}
 
 int Receive(int sd, char *msg)
 {
