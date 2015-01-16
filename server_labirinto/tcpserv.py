@@ -149,7 +149,6 @@ def handler2(clientsock,addr):
                     if data[0] == 's':
                         if data[1] == '\x00':
                             #sensore 0 : distanza avanti
-                            print 'sensore0'
                             risposta = sensore(robo.x, robo.y, robo.dx, robo.dy)
                         if data[1] == '\x01':
                             #sensore 1 : distanza sinistra
