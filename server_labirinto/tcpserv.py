@@ -4,6 +4,7 @@ import thread
 import time
 import math
 import random
+import mapper
 
 import pyglet
 from pyglet.gl import *
@@ -56,19 +57,20 @@ def sensore(tx, ty, dx, dy):
     return str(mindist)
 
 
-linea(a ,a ,a ,b)
-linea(a ,b ,b ,b)
-linea(b ,a ,b ,b)
-linea(b ,a , 120 ,a)
-linea(a ,a , 80 ,a)
+#linea(a ,a ,a ,b)
+#linea(a ,b ,b ,b)
+#linea(b ,a ,b ,b)
+#linea(b ,a , 120 ,a)
+#linea(a ,a , 80 ,a)
 
-linea(5*a,7*a,b/2,b/3)
-linea(b/2,7*a,b/2,b/3)
-linea(5*a,b/2,3*b/4,b/2)
-linea(b/4,3*b/4,3*b/4,3*b/4)
+#linea(5*a,7*a,b/2,b/3)
+#linea(b/2,7*a,b/2,b/3)
+#linea(5*a,b/2,3*b/4,b/2)
+#linea(b/4,3*b/4,3*b/4,3*b/4)
+
+lista, roboPos = mapper.parseMapFile("mappaSensori.map")
 
 
-    
 def f(x):
     r = 1
     while x >0:
@@ -112,7 +114,10 @@ class obj:
             #handler(self.cli,self.addr)
     
 robo = obj()
-     
+
+robo.x = roboPos[0]
+robo.y = roboPos[1]
+
 BUFF = 1024
 
 #INDIRIZZO E PORTA DEL SERVER
