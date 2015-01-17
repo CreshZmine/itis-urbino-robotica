@@ -3,6 +3,7 @@ from socket import *
 import thread
 import time
 import math
+import random
 
 import pyglet
 from pyglet.gl import *
@@ -14,6 +15,8 @@ listaraggi = []
 a=10
 b=400
 s=12
+
+random.seed()
  
 def tp(x,y):
     return math.sqrt(x*x+y*y)
@@ -38,7 +41,7 @@ def sensore(tx, ty, dx, dy):
     print "sensore"
     startx=tx
     starty=ty
-    mindist = 200
+    mindist = 200.0
     minpoint = (0,0)
     while abs(tx-startx)<100 and abs(ty-starty)<100 :
         for p in lista :
@@ -49,6 +52,7 @@ def sensore(tx, ty, dx, dy):
         tx += dx
         ty += dy
     listaraggi = [ minpoint ]
+    mindist += random.randrange(-1000, 1000, 1)/1000.0
     return str(mindist)
 
 
