@@ -1,9 +1,13 @@
 import math
 
+INFINITE=999
+
 class nodo:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.peso = INFINITE
+        self.precedente = None
 
     def calcola_distanza(self, target):
         dx = target.x - self.x
@@ -13,10 +17,11 @@ class nodo:
         return math.sqrt(dx+dy)
 
 def calcola_strada_corta(inizio, fine):
+
     scanning = []
     scanned = [inizio]
     for vicino in inizio.vicini:
-        vicino.precendente = inizio
+        vicino.precedente = inizio
         vicino.peso = inizio.calcola_distanza(vicino)
         scanning.append(vicino)
 
@@ -30,9 +35,9 @@ def calcola_strada_corta(inizio, fine):
         for vicino in min.vicini:
             if not vicino in scanned:
                 peso_compl = min.calcola_distanza(vicino)+min.peso
-                if not(hasattr(vicino, "peso")) or peso_compl < vicino.peso:
+                if peso_compl < vicino.peso:
                     vicino.peso = peso_compl
-                    vicino.precendente = min
+                    vicino.precedente = min
                 if not vicino in scanning:
                     scanning.append(vicino)
 
@@ -41,11 +46,18 @@ def calcola_strada_corta(inizio, fine):
         scanned.append(min)
 
     strada = []
-    if hasattr(fine, "precendente"):
+    if not fine.precedente is None:
         strada.append(fine)
         curr = fine
         while not curr is inizio:
-            strada.insert(0, curr.precendente)
-            curr = curr.precendente
+            strada.insert(0, curr.precedente)
+            curr = curr.precedente
 
     return strada
+
+def reset_nodi(nodi):
+    #Resetto gli i pesi e i puntatori ai nodi precedenti
+    for n in nodi:
+        n.peso = INFINITE
+        n.precedente = None
+
