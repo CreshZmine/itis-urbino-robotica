@@ -1,16 +1,18 @@
 import nodi
 
-a = nodi.nodo(0,0)
+grafo = nodi.Grafo()
+
+a = nodi.Nodo(0,0)
 a.vicini = []
-b = nodi.nodo(1,1)
+b = nodi.Nodo(1,1)
 b.vicini = []
-c = nodi.nodo(2,2)
+c = nodi.Nodo(2,2)
 c.vicini = []
-d = nodi.nodo(3,3)
+d = nodi.Nodo(3,3)
 d.vicini = []
-e = nodi.nodo(4,4)
+e = nodi.Nodo(4,4)
 e.vicini = []
-f = nodi.nodo(5,5)
+f = nodi.Nodo(5,5)
 f.vicini = []
 
 a.vicini.append(b)
@@ -35,9 +37,16 @@ f.vicini.append(e)
 f.vicini.append(b)
 f.vicini.append(d)
 
+grafo.nodi.append(a)
+grafo.nodi.append(b)
+grafo.nodi.append(c)
+grafo.nodi.append(d)
+grafo.nodi.append(e)
+grafo.nodi.append(f)
+
 inizio = a
 fine = f
 
-res = nodi.calcola_strada_corta(inizio, fine)
+res = grafo.calcola_strada_corta(inizio, fine)
 for n in res:
     print str(n.x) + " " + str(n.y) + "\n"
