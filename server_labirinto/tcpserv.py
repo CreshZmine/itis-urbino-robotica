@@ -16,6 +16,7 @@ listaraggi = []
 a=10
 b=400
 s=12
+DISTANZA_MAX_PROBABILITA = 20
 
 random.seed()
  
@@ -47,13 +48,15 @@ def sensore(tx, ty, dx, dy):
     while abs(tx-startx)<100 and abs(ty-starty)<100 :
         for p in lista :
             if distanza(p,(tx,ty))<20 :
-                if mindist > distanza(p,(robo.x,robo.y)) :
+                if mindist > distanza(p,(robo.x,robo.y)):
                     mindist = distanza(p,(robo.x,robo.y))
                     minpoint = p
         tx += dx
         ty += dy
     listaraggi = [ minpoint ]
     mindist += random.randrange(-1000, 1000, 1)/1000.0
+    if random.randrange(0,100,1) < DISTANZA_MAX_PROBABILITA:
+        mindist = 200
     return str(mindist)
 
 
