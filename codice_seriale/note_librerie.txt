@@ -1,0 +1,2 @@
+* DA PROVARE*
+- pyserial | http://pyserial.sourceforge.net/
