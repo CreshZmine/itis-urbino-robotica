@@ -6,16 +6,30 @@ import serial
 
 ####### CONNECTION PARAMETERS #######
 port = "COM2" # Specify serial post
+altport = "COM3" # Specify alternative serial post
 baud = 9600 # Set baudrate to 9600bps
 #####################################
 
-ser = serial.Serial(port, baud)  #Opening serial port
+try:
+	open=True;
+	ser = serial.Serial(port, baud)  #Opening serial port
+	useport=port
+except:
+	print ("Unable to open port " + port + ". Trying alternarive port.")
+	open=False;
+	try:
+		open=True;
+		ser = serial.Serial(altport, baud)  #Opening serial port
+		useport=altport
+	except:
+		print ("Unable to open alternative port " + altport)
+		open=False;
 
-if ser.isOpen():	#Check if connection is open
+if open:	#Check if connection is open
 	com_num = ser.portstr
 	print ("Porta " + com_num + " aperta")
 	### Send command to serial ###
-	buffer = "Hi! I'm a test from client 1"
+	buffer = "Comunication test from " + useport
 	ser.write(buffer)      
 	### Wait for data ###
 	num = 0
@@ -26,6 +40,3 @@ if ser.isOpen():	#Check if connection is open
 	print ("Dati ricevuti dalla seriale: ")
 	print buffer
 	ser.close()		#Close connection
-else:
-	print ("Porta seriale gia' in uso o inesistente") 
-	s = raw_input("Digita INVIA per uscire")
