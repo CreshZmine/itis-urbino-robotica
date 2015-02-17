@@ -1,20 +1,23 @@
+import socket
+
 HOST = '127.0.0.1'
 PORT = 5436
 
-s=None
+class Robo_moves():
 
-def initialize():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((HOST, PORT))
+    def __init__(self):
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.connect((HOST, PORT))
 
-def turn_right():
-    s.sendall('r')
+    def turn_right(self):
+        self.s.sendall('r')
 
-def turn_left():
-    s.sendall('l')
+    def turn_left(self):
+        self.s.sendall('l')
 
-def forward():
-    s.sendall('a')
+    def forward(self):
+        self.s.sendall('a')
 
-def sensore(numero_sensore):
-    s.sendall('s'+chr(numero_sensore))
+    def sense(self, numero_sensore):
+        self.s.sendall('s'+chr(numero_sensore))
+        return self.s.recv(4096)
