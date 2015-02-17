@@ -15,6 +15,7 @@ try:
 	ser = serial.Serial(port, baud)  #Opening serial port
 	useport=port
 except:
+	# In case of connection error
 	print ("Unable to open port " + port + ". Trying alternarive port.")
 	open=False;
 	try:
@@ -31,12 +32,15 @@ if open:	#Check if connection is open
 	### Send command to serial ###
 	buffer = "Comunication test from " + useport
 	ser.write(buffer)      
-	### Wait for data ###
+	### Read data from serial ###
+	read=''
 	num = 0
 	while num == 0:
-		num = ser.inWaiting()
+		while nume !=0:
+			num = ser.inWaiting()
+			read+=ser.read(num)
+		num=0
 	### Get Serial Buffer ###
-	buffer = ser.read(num)
 	print ("Dati ricevuti dalla seriale: ")
-	print buffer
+	print (read)
 	ser.close()		#Close connection
