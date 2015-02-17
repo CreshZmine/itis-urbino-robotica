@@ -21,3 +21,9 @@ class Robo_moves():
     def sense(self, numero_sensore):
         self.s.sendall('s'+chr(numero_sensore))
         return self.s.recv(4096)
+
+    def turn(self, theta):
+        self.s.sendall('t'+str(theta))
+
+    def termina(self):
+        self.s.close()

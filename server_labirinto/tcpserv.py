@@ -9,9 +9,9 @@ import mapper
 import pyglet
 from pyglet.gl import *
 
-#lista=[(10,10),(100,100),(20,80),(10,30),(300,100),(20,180)] 
+#lista=[(10,10),(100,100),(20,80),(10,30),(300,100),(20,180)]
 lista=[]
-listaraggi = [] 
+listaraggi = []
 
 a=10
 b=400
@@ -19,10 +19,10 @@ s=12
 DISTANZA_MAX_PROBABILITA = 20
 
 random.seed()
- 
+
 def tp(x,y):
     return math.sqrt(x*x+y*y)
-    
+
 def linea(x0,y0,x1,y1):
     dx =x1-x0
     dy =y1-y0
@@ -33,7 +33,7 @@ def linea(x0,y0,x1,y1):
         lista.append((x0+dx*i/d,y0+dy*i/d))
         i=i+10
     lista.append((x1,y1))
-        
+
 def distanza((x0,y0),(x1,y1)):
     dx =x1-x0
     dy =y1-y0
@@ -171,7 +171,10 @@ def handler2(clientsock,addr):
                         if data[1] == '\x03':
                             #sensore 3 : distanza dietro
                             risposta = sensore(robo.x, robo.y, -robo.dx, -robo.dy)
-
+                    else:
+                        if data[0] == 't':
+                            robo.ruota(float(data[1:]))
+                            risposta = "ok"
         clientsock.send(risposta)
         time.sleep(0.6)
         print 'sent:' + repr(gen_response())
@@ -245,5 +248,5 @@ win = pyglet.window.Window()
 def on_draw():
     glClear(GL_COLOR_BUFFER_BIT)
     disegna()
-            
+
 pyglet.app.run()
