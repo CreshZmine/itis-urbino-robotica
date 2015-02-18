@@ -17,22 +17,23 @@ try:
 	com_num = ser.portstr
 except:
 	# In case of connection error
-	print ("[Sys] Unable to open port " + port + ". Trying alternarive port.")
+	print ("[Warning] Unable to open port " + port + ". Trying alternarive port.")
 	open=False;
 	try:
 		open=True;
 		ser = serial.Serial(altport, baud)  #Opening serial port
 		com_num = ser.portstr
 	except:
-		print ("[Sys] Unable to open alternative port " + altport + "The program will be terminated.")
+		print ("[Warning] Unable to open alternative port " + altport + "The program will be terminated.")
 		open=False;
 
 if open: #Check if connection is open
 	try:
 		### Printing connection information ###
-		print ("[Sys] Serial connection open on port " + com_num)
-		print ("[Sys] Baudrate set to " + str(baud))
-		print ("[Sys] Character terminator set to (" + charTerminator + ")")
+		print ("[Info] Serial connection open on port " + com_num)
+		print ("[Info] Baudrate set to " + str(baud))
+		print ("[Info] Character terminator set to (" + charTerminator + ")")
+		print ("[Info] Press CTRL+C to close the program")
 		### Read data from serial ###
 		while True:
 			read=""
@@ -47,8 +48,8 @@ if open: #Check if connection is open
 					break
 				elif (num!=0):
 					read+=ser.read(num)
-			print ("[Ser] Recived: " + read[0:lenRead-1]) # Print serial buffer
+			print ("[Serial] Recived: " + read[0:lenRead-1]) # Print serial buffer
 	except:
-		print ("\n[Sys] Keyboard interrupt detected. The program will be terminated.")
+		print ("\n[Info] Keyboard interrupt detected. The program will be terminated.")
 		ser.close()	 #Close connection
-		print ("[Sys] Serial connection closed.")
+		print ("[Info] Serial connection closed.")
