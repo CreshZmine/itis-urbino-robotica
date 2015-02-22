@@ -24,7 +24,7 @@ def quadro():
     d = 4.0
     for x in range(400):
         for y in range(400):
-            if mappa[i][j] == True:
+            if mappa[x][y] == True:
                 glBegin(GL_LINE_STRIP)
                 glVertex2f(x-d, y-d)
                 glVertex2f(x-d, y+d)
