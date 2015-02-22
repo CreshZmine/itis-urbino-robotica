@@ -2,6 +2,8 @@ import movimenti
 import math
 import pyglet
 from pyglet.gl import *
+import time
+import thread
 
 robot = movimenti.Robo_moves()
 mappa=[[False for x in range(400)] for x in range(400)]
@@ -33,15 +35,19 @@ def quadro():
                 glVertex2f(x-d, y-d)
                 glEnd()
 
+def main_loop(robot, theta):
+    while theta <  math.pi*2:
+        elabora_sensore(theta)
+        robot.turn(0.052)
+        theta += 0.052
+        #robot.turn(math.pi)
+        #theta += math.pi
+        print str(theta)
+    robot.termina()
+
+thread.start_new_thread(main_loop, (robot, theta))
+
 win = pyglet.window.Window()
-
-while theta <  math.pi*5/2:
-    elabora_sensore()
-    robot.turn(0.052)
-    theta += 0.052
-    print str(theta)
-
-robot.termina()
 
 @win.event
 def on_draw():
