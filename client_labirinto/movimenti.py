@@ -11,12 +11,15 @@ class Robo_moves():
 
     def turn_right(self):
         self.s.sendall('r')
+        self.s.recv(4096)
 
     def turn_left(self):
         self.s.sendall('l')
+        self.s.recv(4096)
 
     def forward(self):
         self.s.sendall('a')
+        self.s.recv(4096)
 
     def sense(self, numero_sensore):
         self.s.sendall('s'+chr(numero_sensore))
@@ -24,6 +27,7 @@ class Robo_moves():
 
     def turn(self, theta):
         self.s.sendall('t'+str(theta))
+        self.s.recv(4096)
 
     def termina(self):
         self.s.close()
