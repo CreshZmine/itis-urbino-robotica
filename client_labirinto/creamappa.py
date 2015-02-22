@@ -9,12 +9,16 @@ x = 200
 y = 200
 theta = math.pi/2
 
-def elabora_sensore():
+def elabora_sensore(theta):
     dist = float(robot.sense(0))
     x_coor = x+dist*math.cos(theta)
     y_coor = y+dist*math.sin(theta)
-    if x_coor > 400 or x_coor < 0 or y_coor > 400 or y_coor < 0:
+    print "Punto a:"
+    print "X: " + str(int(x_coor))
+    print "Y: " + str(int(y_coor))
+    if not(int(x_coor) >= 400 or int(x_coor) < 0 or int(y_coor) >= 400 or int(y_coor) < 0):
         mappa[int(x_coor)][int(y_coor)] = True
+        print "Passato"
 
 def quadro():
     d = 4.0
