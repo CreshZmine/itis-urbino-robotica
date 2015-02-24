@@ -18,12 +18,12 @@ class RoboSerial:
 			ser = serial.Serial(self.port, self.baud)  #Opening serial port
 		except:
 			# In case of connection error to first port
-			print ("[Warning] Unable to open port " + self.port + ". Trying alternarive port.")
+			# print ("[Warning] Unable to open port " + self.port + ". Trying alternarive port.")
 			try:
 				# Connection with alternative port
 				ser = serial.Serial(self.altport, self.baud)  #Opening serial port
 			except:
-				print ("[Warning] Unable to open alternative port " + self.altport)
+				# print ("[Warning] Unable to open alternative port " + self.altport)
 				ser=None
 		
 		return ser
@@ -32,7 +32,7 @@ class RoboSerial:
 		if (ser != None):
 			# Check if connection is opened
 			ser.close()	 #Close connection
-			print ("[Info] Serial connection closed.")
+			#print ("[Info] Serial connection closed.")
 			
 	def Recive(self, ser):
 		if (ser != None):
@@ -48,7 +48,6 @@ class RoboSerial:
 					break
 				elif (num!=0):
 					read+=ser.read(num)
-			#print ("[Serial] Recived: " + read[0:lenRead-1]) # Print serial buffer
 			return read
 		else:
 			return ""
@@ -58,11 +57,3 @@ class RoboSerial:
 			# Check if connection is opened
 			msg+=" "+self.charTerminator
 			ser.write(msg)
-
-## DEBUGGING ONLY ##			
-Prova = RoboSerial()
-ser = Prova.OpenConnection()
-#msg = Prova.Recive(ser)
-#print msg
-Prova.Send(ser, "Hello")
-Prova.CloseConnection(ser)
