@@ -1,8 +1,8 @@
-from classSerial import RoboSerial
+from RoboSerial import RoboSerial
 
 Prova = RoboSerial()
-ser = Prova.OpenConnection()
-#msg = Prova.Recive(ser)
+Prova.OpenConnection()
+#msg = Prova.Recive()
 #print msg
-Prova.Send(ser, "Hello")
-Prova.CloseConnection(ser)
+Prova.Send("Hello")
+Prova.CloseConnection()
