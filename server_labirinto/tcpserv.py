@@ -45,18 +45,17 @@ def sensore(tx, ty, dx, dy):
     starty=ty
     mindist = 200.0
     minpoint = (0,0)
-    while abs(tx-startx)<100 and abs(ty-starty)<100 :
+    finito = False
+    while abs(tx-startx)<200 and abs(ty-starty)<200 and not finito:
         for p in lista :
-            if distanza(p,(tx,ty))<20 :
+            if distanza(p,(tx,ty))<10 :
                 if mindist > distanza(p,(robo.x,robo.y)):
                     mindist = distanza(p,(robo.x,robo.y))
                     minpoint = p
+                    finito = True
         tx += dx
         ty += dy
     listaraggi = [ minpoint ]
-    mindist += random.randrange(-1000, 1000, 1)/1000.0
-    if random.randrange(0,100,1) < DISTANZA_MAX_PROBABILITA:
-        mindist = 200
     return str(mindist)
 
 
