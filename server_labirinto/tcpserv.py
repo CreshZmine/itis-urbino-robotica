@@ -71,7 +71,7 @@ def sensore(tx, ty, dx, dy):
 #linea(5*a,b/2,3*b/4,b/2)
 #linea(b/4,3*b/4,3*b/4,3*b/4)
 
-lista, roboPos = mapper.parseMapFile("mappaSensori.map")
+lista, roboPos = mapper.parseMapFile("mappaDef.map")
 
 
 def f(x):
@@ -141,19 +141,19 @@ localtime = time.asctime( time.localtime(time.time()) )
 print "Server on. Local Time "+localtime
 
 def gen_response():
-    return 'ok-bene\n' 
- 
+    return 'ok-bene\n'
+
 def handler2(clientsock,addr):
     while 1:
-        
+
         data = clientsock.recv(BUFF)
         print 'data:' + repr(data)
-        if not data : 
+        if not data :
             break
         #   if data == '': break
         a = f(1000) #solo per rallentare
         risposta="che?"
-        if data[0] == 'a' : 
+        if data[0] == 'a' :
             print "avanti"
             robo.avanti(4)
             risposta = "ok"
@@ -187,18 +187,18 @@ def handler2(clientsock,addr):
         time.sleep(0.6)
         print 'sent:' + repr(gen_response())
     clientsock.close()
-    print "=== chiuso ===" 
+    print "=== chiuso ==="
 
 
 def handler(clientsock,addr):
-    
+
     data = clientsock.recv(BUFF)
     print 'data:' + repr(data)
-    if not data : 
+    if not data :
         return
     #   if data == '': break
     a = f(1000) #solo per rallentare
-    if data[0] == 'a' : 
+    if data[0] == 'a' :
         print "avanti"
         robo.avanti(4)
     else:
@@ -207,12 +207,12 @@ def handler(clientsock,addr):
         else:
             if data[0] == 'l' :
                 robo.ruota(0.7)
-                 
+
     clientsock.send(gen_response())
     print 'sent:' + repr(gen_response())
 
 
-def connetti():    
+def connetti():
     if __name__=='__main__':
         ADDR = (HOST, PORT) #QUESTO SERVER
         serversock = socket(AF_INET, SOCK_STREAM)
