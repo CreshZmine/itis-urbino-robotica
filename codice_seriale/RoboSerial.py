@@ -8,7 +8,7 @@ class RoboSerial:
 	def __init__(self): 
 		self.port = "/dev/ttyAMA0" # Specify serial post
 		self.altport = "COM2" # Specify alternative serial post
-		self.baud = 9600 # Set baudrate to 9600bps
+		self.baud = 115200 # Set baudrate to 115200bps
 		self.charTerminator="*" # Character that determines the end of the communication
 		self.ser=None
 	
@@ -54,5 +54,22 @@ class RoboSerial:
 	def Send(self, msg):
 		if (self.ser != None):
 			# Check if connection is opened
-			msg+=" "+self.charTerminator
+			msg+=self.charTerminator
 			self.ser.write(msg)
+
+	def GoForward(self):
+		# Send a forward command
+		if(self.ser!=None):
+			msg="f"
+			self.Send(msg)
+	def GoBack(self):
+		# Send a back command
+		if(self.ser!=None):
+			msg="b"
+			self.Send(msg)
+
+	def RequestSensor(self, idSens):
+		# Request a sensor status
+		if(self.ser!=None):
+			msg="s"+chr(idSens)
+			self.Send(msg)
