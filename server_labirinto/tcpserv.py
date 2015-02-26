@@ -5,6 +5,7 @@ import time
 import math
 import random
 import mapper
+import sys
 
 import pyglet
 from pyglet.gl import *
@@ -45,18 +46,17 @@ def sensore(tx, ty, dx, dy):
     starty=ty
     mindist = 200.0
     minpoint = (0,0)
-    while abs(tx-startx)<100 and abs(ty-starty)<100 :
+    finito = False
+    while abs(tx-startx)<200 and abs(ty-starty)<200 and not finito:
         for p in lista :
-            if distanza(p,(tx,ty))<20 :
+            if distanza(p,(tx,ty))<10 :
                 if mindist > distanza(p,(robo.x,robo.y)):
                     mindist = distanza(p,(robo.x,robo.y))
                     minpoint = p
+                    finito = True
         tx += dx
         ty += dy
     listaraggi = [ minpoint ]
-    mindist += random.randrange(-1000, 1000, 1)/1000.0
-    if random.randrange(0,100,1) < DISTANZA_MAX_PROBABILITA:
-        mindist = 200
     return str(mindist)
 
 
@@ -71,7 +71,7 @@ def sensore(tx, ty, dx, dy):
 #linea(5*a,b/2,3*b/4,b/2)
 #linea(b/4,3*b/4,3*b/4,3*b/4)
 
-lista, roboPos = mapper.parseMapFile("mappaSensori.map")
+lista, roboPos = mapper.parseMapFile("mappaDef.map")
 
 
 def f(x):
@@ -95,31 +95,39 @@ class obj:
         self.x = self.x+self.dx*dl
         self.y = self.y+self.dy*dl
         print "avanti: " ,self.x,self.y
-        
+
     def ruota(self,da):
         self.dx,self.dy = self.dx*math.cos(da)-self.dy*math.sin(da),self.dx*math.sin(da)+self.dy*math.cos(da)
-         
+
     def sensore(self,n):
         return 0
 
     def disegna(self):
         d = 6.0
         glBegin(GL_LINE_STRIP)
-        glVertex2f(self.x-self.dy*d, self.y-self.dx*d)  
-        glVertex2f(self.x+self.dy*d, self.y+self.dx*d)  
-        glVertex2f(self.x+self.dx*2*d, self.y+self.dy*2*d)  
-        glVertex2f(self.x-self.dy*d, self.y-self.dx*d)  
+        glVertex2f(self.x-self.dy*d, self.y-self.dx*d)
+        glVertex2f(self.x+self.dy*d, self.y+self.dx*d)
+        glVertex2f(self.x+self.dx*2*d, self.y+self.dy*2*d)
+        glVertex2f(self.x-self.dy*d, self.y-self.dx*d)
         glEnd()
         if self.connessione <= 1:
             if self.connessione == 1: 
                 connetti()
             self.connessione += 1
             #handler(self.cli,self.addr)
-    
+
 robo = obj()
+
+roboPos = [100,0]
+if len(sys.argv) >= 3:
+    roboPos = [int(sys.argv[1]), int(sys.argv[2])]
+    if len(sys.argv) >= 4:
+        robo.dx = math.cos(math.radians((float(sys.argv[3]))))
+        robo.dy = math.sin(math.radians((float(sys.argv[3]))))
 
 robo.x = roboPos[0]
 robo.y = roboPos[1]
+
 
 BUFF = 1024
 
@@ -133,19 +141,19 @@ localtime = time.asctime( time.localtime(time.time()) )
 print "Server on. Local Time "+localtime
 
 def gen_response():
-    return 'ok-bene\n' 
- 
+    return 'ok-bene\n'
+
 def handler2(clientsock,addr):
     while 1:
-        
+
         data = clientsock.recv(BUFF)
         print 'data:' + repr(data)
-        if not data : 
+        if not data :
             break
         #   if data == '': break
         a = f(1000) #solo per rallentare
         risposta="che?"
-        if data[0] == 'a' : 
+        if data[0] == 'a' :
             print "avanti"
             robo.avanti(4)
             risposta = "ok"
@@ -179,18 +187,18 @@ def handler2(clientsock,addr):
         time.sleep(0.6)
         print 'sent:' + repr(gen_response())
     clientsock.close()
-    print "=== chiuso ===" 
+    print "=== chiuso ==="
 
 
 def handler(clientsock,addr):
-    
+
     data = clientsock.recv(BUFF)
     print 'data:' + repr(data)
-    if not data : 
+    if not data :
         return
     #   if data == '': break
     a = f(1000) #solo per rallentare
-    if data[0] == 'a' : 
+    if data[0] == 'a' :
         print "avanti"
         robo.avanti(4)
     else:
@@ -199,12 +207,12 @@ def handler(clientsock,addr):
         else:
             if data[0] == 'l' :
                 robo.ruota(0.7)
-                 
+
     clientsock.send(gen_response())
     print 'sent:' + repr(gen_response())
 
 
-def connetti():    
+def connetti():
     if __name__=='__main__':
         ADDR = (HOST, PORT) #QUESTO SERVER
         serversock = socket(AF_INET, SOCK_STREAM)
