@@ -5,6 +5,7 @@ import time
 import math
 import random
 import mapper
+import sys
 
 import pyglet
 from pyglet.gl import *
@@ -94,31 +95,39 @@ class obj:
         self.x = self.x+self.dx*dl
         self.y = self.y+self.dy*dl
         print "avanti: " ,self.x,self.y
-        
+
     def ruota(self,da):
         self.dx,self.dy = self.dx*math.cos(da)-self.dy*math.sin(da),self.dx*math.sin(da)+self.dy*math.cos(da)
-         
+
     def sensore(self,n):
         return 0
 
     def disegna(self):
         d = 6.0
         glBegin(GL_LINE_STRIP)
-        glVertex2f(self.x-self.dy*d, self.y-self.dx*d)  
-        glVertex2f(self.x+self.dy*d, self.y+self.dx*d)  
-        glVertex2f(self.x+self.dx*2*d, self.y+self.dy*2*d)  
-        glVertex2f(self.x-self.dy*d, self.y-self.dx*d)  
+        glVertex2f(self.x-self.dy*d, self.y-self.dx*d)
+        glVertex2f(self.x+self.dy*d, self.y+self.dx*d)
+        glVertex2f(self.x+self.dx*2*d, self.y+self.dy*2*d)
+        glVertex2f(self.x-self.dy*d, self.y-self.dx*d)
         glEnd()
         if self.connessione <= 1:
             if self.connessione == 1: 
                 connetti()
             self.connessione += 1
             #handler(self.cli,self.addr)
-    
+
 robo = obj()
+
+roboPos = [100,0]
+if len(sys.argv) >= 3:
+    roboPos = [int(sys.argv[1]), int(sys.argv[2])]
+    if len(sys.argv) >= 4:
+        robo.dx = math.cos(math.radians((float(sys.argv[3]))))
+        robo.dy = math.sin(math.radians((float(sys.argv[3]))))
 
 robo.x = roboPos[0]
 robo.y = roboPos[1]
+
 
 BUFF = 1024
 
