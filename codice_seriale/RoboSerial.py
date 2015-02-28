@@ -8,10 +8,16 @@ import serial
 
 class RoboSerial: 
 	def __init__(self): 
+		# Impostazioni di connessione
 		self.port = "/dev/ttyAMA0" # Porta seriale principale
-		self.altport = "COM2" # Porta seriale alternativa (attualmente usate per la simulazione su Windows)
+		self.altPort = "COM2" # Porta seriale alternativa (attualmente usate per la simulazione su Windows)
 		self.baud = 115200 # Baudrate per la comunicazione seriale
+		
+		# Impostazioni di comunicazione
+		self.usedPort = "" # Porta seriale attualmente attiva
 		self.charStarter="#" # Carattere che determina l'inizio della comunicazione
+		
+		# Variabili aggiuntive
 		self.charTerminator="*" # Carattere che determina la fine della comunicazione
 		self.ser=None # Oggetto per comunicazione seriale
 	
@@ -19,17 +25,20 @@ class RoboSerial:
 		# !NOTA! Se non è stato possibile aprire la comunicazione seriale ser verrà settato a null
 		try:
 			self.ser = serial.Serial(self.port, self.baud)  # Tentativo di connessione con la porta principale
+			self.usedPort=self.port
 		except:
 			# In caso di errore con la porta principale
 			try:
-				self.ser = serial.Serial(self.altport, self.baud)  # Tentativo di connessione con la porta alternativa
+				self.ser = serial.Serial(self.altPort, self.baud)  # Tentativo di connessione con la porta alternativa
+				self.usedPort=self.altPort
 			except:
 				# In caso di errore con la porta alternativa
 				self.ser=None # Imposta "ser" a null per mancata connessione
 
 	def CloseConnection(self):
 		if (self.ser != None):
-			self.ser.close() #Close connection
+			self.ser.close() # Chiude la connessione
+			self.usedPort="" # Modifica la stringa per la porta in uso
 			
 	def Recive(self):
 		if (self.ser != None):
@@ -72,7 +81,7 @@ class RoboSerial:
 		return self.baud
 	
 	def GetPort(self):
-		return self.port
+		return self.usedPort
 	
 	def GetCharStarter(self):
 		return self.charStarter
