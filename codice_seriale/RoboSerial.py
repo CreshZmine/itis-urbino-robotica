@@ -14,11 +14,11 @@ class RoboSerial:
 		self.baud = 115200 # Baudrate per la comunicazione seriale
 		
 		# Impostazioni di comunicazione
-		self.usedPort = "" # Porta seriale attualmente attiva
 		self.charStarter="#" # Carattere che determina l'inizio della comunicazione
+		self.charTerminator="*" # Carattere che determina la fine della comunicazione
 		
 		# Variabili aggiuntive
-		self.charTerminator="*" # Carattere che determina la fine della comunicazione
+		self.usedPort = "" # Porta seriale attualmente attiva
 		self.ser=None # Oggetto per comunicazione seriale
 	
 	def OpenConnection(self):
@@ -34,6 +34,15 @@ class RoboSerial:
 			except:
 				# In caso di errore con la porta alternativa
 				self.ser=None # Imposta "ser" a null per mancata connessione
+				
+	def OpenConnectionPort(self, portCon):
+		# !NOTA! Se non è stato possibile aprire la comunicazione seriale ser verrà settato a null
+		try:
+			self.ser = serial.Serial(portCon, self.baud)  # Tentativo di connessione
+			self.usedPort=portCon
+		except:
+			# In caso di errore
+			self.ser=None # Imposta "ser" a null per mancata connessione
 
 	def CloseConnection(self):
 		if (self.ser != None):
