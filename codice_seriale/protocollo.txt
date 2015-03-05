@@ -1,0 +1,71 @@
+PROPOSTA PROTOCOLLO DI COMUNICAZIONE
+TIVA - RASPBERRY PI
+    versione 1
+================================
+Collegamento fisico:
+
+UART-SERIALE 115200 8N1
+
+su tiva (ad esempio):
+    U1RX: (PB0)
+    U1TX: (PB1)
+su RPI
+    TX: GPio14
+    RX: GPio15
+
+================================
+Passaggio delle informazioni:
+scambio di messaggi di lunghezza fissa
+
+
+MESSAGGI DEL RASPBERRY (3byte):
+(direttive oppure richieste letture sensori)
+
+<comando(char)><dato(8bit)><checksum(8bit)>
+
+lista comandi:
+A - avanti
+I - indietro (retromarcia)
+S - stop
+R - gira a destra (+90gradi)
+L - gira a sinistra (-90gradi)
+B - back (180 gradi)
+G - direzione in gradi assoluta(?!?!?)
+    (relativa all'angolo di inizio percorso)
+1-6 misura sensore distanza n1-6 (mm)
+7-8 - sensore velocità motori (mm/s)
+9-16 - pendenze e angoli (gradi)
+.... - altro
+
+il byte <dato> e' disponibile per uso ancora da definire
+
+Gestione errori:
+    raspberry ripete la richiesta se non
+    riceve risposta corretta (timeout mezzo secondo??)
+    oppure se riceve "E" (errore)
+
+====================================================
+MESSAGGI DEL TIVA: (4byte)
+(fornitura di informazioni richieste e non richieste)
+
+<tag><dato16bit><checksum>
+
+____________________________________
+tag (1byte)       |  dato (16bit)
+------------------------------------
+numero sensore    |  misura sensore
+                  |
+comandi A/I/S/R/L |  True/False (comando accettato-eseguito o no)
+        b/G       |
+                  |
+E                 | #errore
+
+Gestione errori:
+    tiva ignora richieste errate
+    oppure invia "E"
+    oppure invia comunque a rotazione
+    tutte le letture dei sensori.
+
+=========================================
+Check sum: XOR di tutti i byte del messaggio e del valore fisso 0xA9
+=====================================================================
