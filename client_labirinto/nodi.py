@@ -1,20 +1,23 @@
+#!/usr/bin/python
 import math
 
 INFINITE=999
 
 class Nodo:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.peso = INFINITE
+    def __init__(self):
+        self.vicini = []
         self.precedente = None
 
-    def calcola_distanza(self, target):
-        dx = target.x - self.x
-        dy = target.y - self.y
-        dx *= dx
-        dy *= dy
-        return math.sqrt(dx+dy)
+    def aggiungi_vicino(self, vicino, peso):
+        self.vicini.append((vicino, peso))
+
+    def get_peso(self, nodo):
+        peso = 0
+        try:
+            peso = self.vicini.index(nodo)[1]
+        except ValueError:
+            peso = INFINITE
+        return peso
 
 class Grafo:
     def __init__(self):
@@ -26,7 +29,7 @@ class Grafo:
         scanned = [inizio]
         for vicino in inizio.vicini:
             vicino.precedente = inizio
-            vicino.peso = inizio.calcola_distanza(vicino)
+            vicino.peso = vicino.get_peso(inizio)
             scanning.append(vicino)
 
         while scanning:
@@ -38,7 +41,7 @@ class Grafo:
             #calcolo i pesi dei vicini di min
             for vicino in min.vicini:
                 if not vicino in scanned:
-                    peso_compl = min.calcola_distanza(vicino)+min.peso
+                    peso_compl = min.get_peso(vicino)+min.peso
                     if peso_compl < vicino.peso:
                         vicino.peso = peso_compl
                         vicino.precedente = min
@@ -64,4 +67,3 @@ class Grafo:
         for n in self.nodi:
             n.peso = INFINITE
             n.precedente = None
-
