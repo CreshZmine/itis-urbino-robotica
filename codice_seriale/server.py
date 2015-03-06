@@ -29,6 +29,7 @@ while True:
 	com.GoBack()
 	com.GoRight()
 	com.GoLeft()
+	com.RequestSensor(6)
 print ("\n[Info] Detected close command. The program will be terminated.")
 com.CloseConnection() #Close connection
 print ("[Info] Serial connection closed.")

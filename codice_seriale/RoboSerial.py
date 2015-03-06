@@ -151,7 +151,6 @@ class RoboSerial:
 	def RequestSensor(self, idSens):
 		# Richiede lo stato di un sensore
 		if(self.ser!=None):
-			msg="s"+chr(idSens)
-			self.Send(msg)
+			self.SendCommand("D",str(idSens))
 
 	
