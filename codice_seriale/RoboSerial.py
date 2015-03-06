@@ -1,5 +1,4 @@
 # coding=utf-8
-
 # Raspberry - RoboSerial | Corso robotica 2014/15 - ITIS E. Mattei Urbino
 # Scritto per Python 2.7
 # Per installare PySerial -> python -m pip install pyserial

@@ -1,5 +1,4 @@
 # coding=utf-8
-
 # Raspberry - Client seriale | Corso robotica 2014/15 - ITIS E. Mattei Urbino
 # Write using Python 2.7
 # To install PySerial -> python -m pip install pyserial
