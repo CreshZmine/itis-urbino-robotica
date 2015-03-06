@@ -26,6 +26,7 @@ while True:
 	if (buffer == closeCommand):
 		break
 	com.Send(buffer)
+	com.SendCommand("F","0")
 	if(com.IsConnceted()):
 		print("Connected")
 print ("\n[Info] Detected close command. The program will be terminated.")
