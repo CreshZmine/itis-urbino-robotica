@@ -1,4 +1,3 @@
-# coding=utf-8
 # Raspberry - Server Seriale | Corso robotica 2014/15 - ITIS E. Mattei Urbino
 # Write using Python 2.7
 # To install PySerial -> python -m pip install pyserial
@@ -26,9 +25,10 @@ while True:
 	if (buffer == closeCommand):
 		break
 	com.Send(buffer)
-	com.SendCommand("F","0")
-	if(com.IsConnceted()):
-		print("Connected")
+	com.GoForward()
+	com.GoBack()
+	com.GoRight()
+	com.GoLeft()
 print ("\n[Info] Detected close command. The program will be terminated.")
 com.CloseConnection() #Close connection
 print ("[Info] Serial connection closed.")

@@ -111,10 +111,11 @@ class RoboSerial:
 			self.ser.write(msg)
 	
 	def SendCommand(self, cmd, dato):
-		msg=cmd+dato
-		msg+=chr(self.GenChecksum(cmd,dato))
-		msg+=self.charTerminator
-		self.ser.write(msg)
+		if (self.ser != None):
+			msg=cmd+dato
+			msg+=chr(self.GenChecksum(cmd,dato))
+			msg+=self.charTerminator
+			self.ser.write(msg)
 			
 	def GenChecksum(self, cmd, dato):
 		# Calcola il checksum partendo dal comando e dal dato passato
@@ -131,13 +132,22 @@ class RoboSerial:
 	def GoForward(self):
 		# Invia un comando di spostamento in avanti
 		if(self.ser!=None):
-			msg="f"
-			self.Send(msg)
+			self.SendCommand("F","0")
+			
 	def GoBack(self):
 		# Invia un comando di spostamento indietro
 		if(self.ser!=None):
-			msg="b"
-			self.Send(msg)
+			self.SendCommand("B","0")
+			
+	def GoRight(self):
+		# Invia un comando di spostamento in avanti
+		if(self.ser!=None):
+			self.SendCommand("R","0")
+			
+	def GoLeft(self):
+		# Invia un comando di spostamento indietro
+		if(self.ser!=None):
+			self.SendCommand("L","0")
 
 	def RequestSensor(self, idSens):
 		# Richiede lo stato di un sensore
