@@ -1,4 +1,3 @@
-#coding: utf8 
 # Raspberry - RoboSerial | Corso robotica 2014/15 - ITIS E. Mattei Urbino
 # Scritto per Python 2.7
 # Per installare PySerial -> python -m pip install pyserial
@@ -25,7 +24,7 @@ class RoboSerial:
 	#######################################
 	
 	def OpenConnection(self):
-		# NOTA Se non è stato possibile aprire la comunicazione seriale ser verrà settato a null
+		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
 		try:
 			self.ser = serial.Serial(self.port, self.baud)  # Tentativo di connessione con la porta principale
 			self.usedPort=self.port
@@ -39,7 +38,7 @@ class RoboSerial:
 				self.ser=None # Imposta "ser" a null per mancata connessione
 				
 	def OpenConnectionPort(self, portCon):
-		# NOTA Se non è stato possibile aprire la comunicazione seriale ser verrà settato a null
+		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
 		try:
 			self.ser = serial.Serial(portCon, self.baud)  # Tentativo di connessione
 			self.usedPort=portCon
@@ -53,7 +52,7 @@ class RoboSerial:
 			self.usedPort="" # Modifica la stringa per la porta in uso
 		
 	def IsConnceted(self):
-		# Verifica se la comunicazione è apera | True se è apera | False se è chiusa
+		# Verifica se la comunicazione e' apera | True se e' apera | False se e' chiusa
 		if (self.ser != None):
 			return True
 		else:
@@ -102,7 +101,7 @@ class RoboSerial:
 			# Restituisce la stringa ricevuta
 			return read
 		else:
-			# Restituisce una stringa vuota perchè la cominicazione non è disponibile
+			# Restituisce una stringa vuota perche' la cominicazione non e' disponibile
 			return ""
 
 	def Send(self, msg):
