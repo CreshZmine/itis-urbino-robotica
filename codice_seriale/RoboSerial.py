@@ -17,7 +17,11 @@ class RoboSerial:
 		
 		# Variabili aggiuntive
 		self.usedPort = "" # Porta seriale attualmente attiva
-		self.ser=None # Oggetto per comunicazione seriale
+		self.ser = None # Oggetto per comunicazione seriale
+		
+		# Buffer di comunicazione
+		self.reciveBuffer = ""
+		self.sendBuffer = ""
 	
 	#######################################
 	# Funzioni per la connessione seriale #
@@ -58,6 +62,10 @@ class RoboSerial:
 		else:
 			return False
 			
+	#####################
+	# Funzioni pset/get #
+	#####################
+	
 	def SetBaudrate(self, baudrate):
 		# Modifica il baudrate della connessione
 		self.CloseConnection()
@@ -75,6 +83,12 @@ class RoboSerial:
 		
 	def GetCharTerminator(self):
 		return self.charTerminator
+		
+	def GetReciveBuffer(self):
+		return self.reciveBuffer
+		
+	def GetSendBuffer(self):
+		return self.sendBuffer
 	
 	#######################################
 	# Funzioni per l'invio e la ricezione #
@@ -86,15 +100,17 @@ class RoboSerial:
 			num = 0
 			lenRead = 0
 			while True:
-				# Verifica quanti dati stanno per esserre ricevuti
-				num = self.ser.inWaiting()
+				num = self.ser.inWaiting() # Verifica quanti dati stanno per esserre ricevuti
 				lenRead = len(read)-1
 				if (lenRead > 0 and read[lenRead] == self.charTerminator): # Rileva il carattere di fine comunicazione
 					break
 				elif (num!=0):
 					# Legge dalla seriale
 					read+=self.ser.read(num)
-					
+			
+			# Salva il messaggio ricevuto nel buffer
+			self.reciveBuffer+=read
+			
 			# Rimuove il carattere terminatore della comunicazione
 			read=read.replace(self.charTerminator," ")
 			
@@ -107,13 +123,16 @@ class RoboSerial:
 	def Send(self, msg):
 		if (self.ser != None):
 			msg+=self.charTerminator
+			self.sendBuffer+=msg
 			self.ser.write(msg)
 	
 	def SendCommand(self, cmd, dato):
+		# Schema messaggio generato <comando(char)><dato(8bit)><checksum(8bit)>
 		if (self.ser != None):
-			msg=cmd+dato
-			msg+=chr(self.GenChecksum(cmd,dato))
-			msg+=self.charTerminator
+			msg=cmd+dato # Compone il messaggio
+			msg+=chr(self.GenChecksum(cmd,dato)) # Genera il checksum
+			msg+=self.charTerminator # Aggiunge il carattere terminatore
+			self.sendBuffer+=msg
 			self.ser.write(msg)
 			
 	def GenChecksum(self, cmd, dato):
