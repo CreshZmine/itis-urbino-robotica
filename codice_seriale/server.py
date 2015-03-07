@@ -30,8 +30,11 @@ if(com.IsConnceted()):
 		## Inizio istruzioni debug ##
 		#com.GoForward()
 		#com.GoBack()
+		com.GoBackGrad()
 		#com.GoRight()
 		#com.GoLeft()
+		com.GoStop()
+		com.GoGrad(3)
 		#com.RequestSensor(6)
 		print ("[Debug] Buffer: " + com.GetSendBuffer()) # Stampa il buffer di messaggi inviati
 		## Fine istruzioni debug ##

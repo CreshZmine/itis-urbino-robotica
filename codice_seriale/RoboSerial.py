@@ -157,15 +157,30 @@ class RoboSerial:
 		if(self.ser!=None):
 			self.SendCommand("B","0")
 			
+	def GoBackGrad(self):
+		# Invia un comando di rotazione di 180 gradi
+		if(self.ser!=None):
+			self.SendCommand("I","0")
+			
 	def GoRight(self):
-		# Invia un comando di spostamento in avanti
+		# Invia un comando di spostamento a destra
 		if(self.ser!=None):
 			self.SendCommand("R","0")
 			
 	def GoLeft(self):
-		# Invia un comando di spostamento indietro
+		# Invia un comando di spostamento a sinistra
 		if(self.ser!=None):
 			self.SendCommand("L","0")
+			
+	def GoStop(self):
+		# Invia un comando di stop
+		if(self.ser!=None):
+			self.SendCommand("S","0")
+			
+	def GoGrad(self,grad):
+		# Invia un comando di rotazione in gradi
+		if(self.ser!=None):
+			self.SendCommand("G",str(grad))
 
 	def RequestSensor(self, idSens):
 		# Richiede lo stato di un sensore
