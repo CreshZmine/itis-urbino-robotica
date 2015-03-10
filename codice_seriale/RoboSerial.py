@@ -16,13 +16,16 @@ class RoboSerial:
 		self.charTerminator="*" # Carattere che determina la fine della comunicazione
 		
 		# Variabili aggiuntive
-		self.usedPort = "" # Porta seriale attualmente attiva
 		self.ser = None # Oggetto per comunicazione seriale
 		
 		# Buffer di comunicazione
 		self.reciveBuffer = ""
 		self.sendBuffer = ""
 	
+	def __del__(self):
+		# Chiusura connessione seriale
+		self.ser.close()
+
 	#######################################
 	# Funzioni per la connessione seriale #
 	#######################################
@@ -31,12 +34,15 @@ class RoboSerial:
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
 		try:
 			self.ser = serial.Serial(self.port, self.baud)  # Tentativo di connessione con la porta principale
-			self.usedPort=self.port
+			self.ser.flushInput() # Scarta tutte le informazioni presenti nel buffer di input
+			self.ser.flushOutput() # Scarta tutte le informazioni presenti nel buffer di input
+
 		except:
 			# In caso di errore con la porta principale
 			try:
 				self.ser = serial.Serial(self.altPort, self.baud)  # Tentativo di connessione con la porta alternativa
-				self.usedPort=self.altPort
+				self.ser.flushInput() # Scarta tutte le informazioni presenti nel buffer di input
+				self.ser.flushOutput() # Scarta tutte le informazioni presenti nel buffer di input
 			except:
 				# In caso di errore con la porta alternativa
 				self.ser=None # Imposta "ser" a null per mancata connessione
@@ -45,19 +51,20 @@ class RoboSerial:
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
 		try:
 			self.ser = serial.Serial(portCon, self.baud)  # Tentativo di connessione
-			self.usedPort=portCon
+			self.ser.flushInput() # Scarta tutte le informazioni presenti nel buffer di input
+			self.ser.flushOutput() # Scarta tutte le informazioni presenti nel buffer di input
 		except:
 			# In caso di errore
 			self.ser=None # Imposta "ser" a null per mancata connessione
 
 	def CloseConnection(self):
-		if (self.ser != None):
+		if(self.IsConnected()):
 			self.ser.close() # Chiude la connessione
 			self.usedPort="" # Modifica la stringa per la porta in uso
 		
 	def IsConnceted(self):
 		# Verifica se la comunicazione e' apera | True se e' apera | False se e' chiusa
-		if (self.ser != None):
+		if(self.IsConnected()):
 			return True
 		else:
 			return False
@@ -76,7 +83,7 @@ class RoboSerial:
 		return self.baud
 	
 	def GetPort(self):
-		return self.usedPort
+		return self.ser.name
 	
 	def GetCharStarter(self):
 		return self.charStarter
@@ -95,7 +102,7 @@ class RoboSerial:
 	#######################################
 	
 	def Recive(self):
-		if (self.ser != None):
+		if(self.IsConnected()):
 			read=""
 			num = 0
 			lenRead = 0
@@ -121,14 +128,14 @@ class RoboSerial:
 			return ""
 
 	def Send(self, msg):
-		if (self.ser != None):
+		if(self.IsConnected()):
 			msg+=self.charTerminator
 			self.sendBuffer+=msg
 			self.ser.write(msg)
 	
 	def SendCommand(self, cmd, dato):
 		# Schema messaggio generato <comando(char)><dato(8bit)><checksum(8bit)>
-		if (self.ser != None):
+		if(self.IsConnected()):
 			msg=cmd+dato # Compone il messaggio
 			msg+=chr(self.GenChecksum(cmd,dato)) # Genera il checksum
 			msg+=self.charTerminator # Aggiunge il carattere terminatore
@@ -149,42 +156,40 @@ class RoboSerial:
 
 	def GoForward(self):
 		# Invia un comando di spostamento in avanti
-		if(self.ser!=None):
+		if(self.IsConnected()):
 			self.SendCommand("F","0")
 			
 	def GoBack(self):
 		# Invia un comando di spostamento indietro
-		if(self.ser!=None):
+		if(self.IsConnected()):
 			self.SendCommand("B","0")
 			
 	def GoBackGrad(self):
 		# Invia un comando di rotazione di 180 gradi
-		if(self.ser!=None):
+		if(self.IsConnected()):
 			self.SendCommand("I","0")
 			
 	def GoRight(self):
 		# Invia un comando di spostamento a destra
-		if(self.ser!=None):
+		if(self.IsConnected()):
 			self.SendCommand("R","0")
 			
 	def GoLeft(self):
 		# Invia un comando di spostamento a sinistra
-		if(self.ser!=None):
+		if(self.IsConnected()):
 			self.SendCommand("L","0")
 			
 	def GoStop(self):
 		# Invia un comando di stop
-		if(self.ser!=None):
+		if(self.IsConnected()):
 			self.SendCommand("S","0")
 			
 	def GoGrad(self,grad):
 		# Invia un comando di rotazione in gradi
-		if(self.ser!=None):
+		if(self.IsConnected()):
 			self.SendCommand("G",str(grad))
 
 	def RequestSensor(self, idSens):
 		# Richiede lo stato di un sensore
-		if(self.ser!=None):
+		if(self.IsConnected()):
 			self.SendCommand("D",str(idSens))
-
-	
