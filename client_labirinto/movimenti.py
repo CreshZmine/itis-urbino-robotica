@@ -29,5 +29,5 @@ class Robo_moves():
         self.s.sendall('t'+str(theta))
         self.s.recv(4096)
 
-    def termina(self):
+    def __del__(self):
         self.s.close()
