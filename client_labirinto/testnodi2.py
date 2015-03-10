@@ -38,4 +38,6 @@ d.aggiungi_vicino(f, 7)
 e.aggiungi_vicino(d, 6)
 
 f.aggiungi_vicino(d, 7)
+
+print grafo.calcola_strada_corta(a, f)
 #http://altenwald.org/2011/10/02/grafos-fundamentos-basicos/

@@ -22,6 +22,7 @@ class Nodo:
 class Grafo:
     def __init__(self):
         self.nodi = []
+        self.reset_nodi()
 
     def calcola_strada_corta(self, inizio, fine):
         self.reset_nodi()
