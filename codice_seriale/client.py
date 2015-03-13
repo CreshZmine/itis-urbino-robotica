@@ -1,4 +1,4 @@
-# Raspberry - Server Seriale | Corso robotica 2014/15 - ITIS E. Mattei Urbino
+# Raspberry - Client Seriale | Corso robotica 2014/15 - ITIS E. Mattei Urbino
 # Write using Python 2.7
 # To install PySerial -> python -m pip install pyserial
 
@@ -10,10 +10,10 @@ com.OpenConnection()
 closeCommand = "exit"
 
 ### Stampa a schermo le informazioni della connessione ###
-print ("[Info] Serial connection open on port " + str(com.GetPort()))
-print ("[Info] Baudrate set to " + str(com.GetBaudrate()))
-print ("[Info] Character starter set to (" + com.GetCharStarter() + ")")
-print ("[Info] Character terminator set to (" + com.GetCharTerminator() + ")")
+print ("[Info] Serial connection open on port " +  com.port )
+print ("[Info] Baudrate set to " + str(com.baud) )
+print ("[Info] Character starter set to (" + com.charStarter + ")")
+print ("[Info] Character terminator set to (" + com.charTerminator + ")")
 print ("[Info] Enter " + closeCommand + " to close the program")
 
 ### Invia messaggio via seriale ###
