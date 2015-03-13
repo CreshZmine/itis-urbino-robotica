@@ -7,7 +7,8 @@ import serial
 class RoboSerial: 
 	def __init__(self): 
 		# Impostazioni di connessione
-		self.port = "/dev/ttyAMA0" # Porta seriale principale
+		self.port = "" # Porta seriale in uso
+		self.defPort = "/dev/ttyAMA0" # Porta seriale principale
 		self.altPort = "COM2" # Porta seriale alternativa (attualmente usate per la simulazione su Windows)
 		self.baud = 115200 # Baudrate per la comunicazione seriale
 		
@@ -32,27 +33,26 @@ class RoboSerial:
 	
 	def OpenConnection(self):
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
+		# !ATTENZIONE! -> Il Raspberry PI quando la porta seriale UART0 viene inizializzata invia un impulso negativo di 32us sul TX
 		try:
-			self.ser = serial.Serial(self.port, self.baud)  # Tentativo di connessione con la porta principale
-			self.ser.flushInput() # Scarta tutte le informazioni presenti nel buffer di input
-			self.ser.flushOutput() # Scarta tutte le informazioni presenti nel buffer di input
+			self.ser = serial.Serial(self.defPort, self.baud)  # Tentativo di connessione con la porta principale
+			self.port=self.defPort
 
 		except:
 			# In caso di errore con la porta principale
 			try:
 				self.ser = serial.Serial(self.altPort, self.baud)  # Tentativo di connessione con la porta alternativa
-				self.ser.flushInput() # Scarta tutte le informazioni presenti nel buffer di input
-				self.ser.flushOutput() # Scarta tutte le informazioni presenti nel buffer di input
+				self.port=self.altPort
 			except:
 				# In caso di errore con la porta alternativa
 				self.ser=None # Imposta "ser" a null per mancata connessione
 				
 	def OpenConnectionPort(self, portCon):
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
+		# !ATTENZIONE! -> Il Raspberry PI quando la porta seriale UART0 viene inizializzata invia un impulso negativo di 32us sul TX
 		try:
 			self.ser = serial.Serial(portCon, self.baud)  # Tentativo di connessione
-			self.ser.flushInput() # Scarta tutte le informazioni presenti nel buffer di input
-			self.ser.flushOutput() # Scarta tutte le informazioni presenti nel buffer di input
+			self.port=portCon
 		except:
 			# In caso di errore
 			self.ser=None # Imposta "ser" a null per mancata connessione
@@ -60,7 +60,7 @@ class RoboSerial:
 	def CloseConnection(self):
 		if(self.IsConnected()):
 			self.ser.close() # Chiude la connessione
-			self.usedPort="" # Modifica la stringa per la porta in uso
+			self.port="" # Modifica la stringa per la porta in uso
 		
 	def IsConnceted(self):
 		# Verifica se la comunicazione e' apera | True se e' apera | False se e' chiusa
@@ -69,34 +69,6 @@ class RoboSerial:
 		else:
 			return False
 			
-	#####################
-	# Funzioni pset/get #
-	#####################
-	
-	def SetBaudrate(self, baudrate):
-		# Modifica il baudrate della connessione
-		self.CloseConnection()
-		self.baud=baudrate
-		self.OpenConnection()
-		
-	def GetBaudrate(self):
-		return self.baud
-	
-	def GetPort(self):
-		return self.ser.name
-	
-	def GetCharStarter(self):
-		return self.charStarter
-		
-	def GetCharTerminator(self):
-		return self.charTerminator
-		
-	def GetReciveBuffer(self):
-		return self.reciveBuffer
-		
-	def GetSendBuffer(self):
-		return self.sendBuffer
-	
 	#######################################
 	# Funzioni per l'invio e la ricezione #
 	#######################################
