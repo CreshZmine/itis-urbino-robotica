@@ -1,13 +1,13 @@
 ﻿== PROPOSTA PROTOCOLLO DI COMUNICAZIONE ==
 == TIVA - RASPBERRY PI ==
-rev. 1B (by Andrea Crescentini)
+rev. 1C (by Andrea Crescentini)
 
 =====================
 Collegamento fisico:
 =====================
 UART-SERIALE 115200 8N1
 
-su tiva (porta UART):
+su tiva (porta UART0):
     U1RX: (PB0)
     U1TX: (PB1)
 su RPI (/dev/ttyAMA0)
@@ -20,11 +20,16 @@ Passaggio delle informazioni:
 scambio di messaggi di lunghezza fissa
 
 ===============================
-MESSAGGI DEL RASPBERRY (3byte):
+MESSAGGI DEL RASPBERRY (4byte):
 ===============================
 (direttive oppure richieste letture sensori)
 
-<comando(char)><dato(8bit)><checksum(8bit)>
+<comando(char)><dato(8bit)><checksum(8bit)><carattere_terminatore(1byte)>
+
+!Nota! - Il tiva prenderà in considerazione solamente i 3byte prima del carattere terminatore
+
+Carattere terminatore:
+*
 
 Lista comandi:
 F - avanti
@@ -46,8 +51,7 @@ D                 |  ID sensore
 E                 |  Errore (anche su raspberry?)
 
 Gestione errori:
-    raspberry ripete la richiesta se non
-    riceve risposta corretta (timeout mezzo secondo??)
+    raspberry ripete la richiesta se non riceve risposta corretta (timeout mezzo secondo??)
     oppure se riceve "E" (errore)
 
 ==========================
@@ -70,8 +74,7 @@ E                 |  Errore
 Gestione errori:
     tiva ignora richieste errate
     oppure invia "E"
-    oppure invia comunque a rotazione
-    tutte le letture dei sensori.
+    oppure invia comunque a rotazione tutte le letture dei sensori.
 
 =========
 Checksum: 
