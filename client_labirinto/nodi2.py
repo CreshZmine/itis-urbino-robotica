@@ -15,7 +15,7 @@ class Grafo:
             if not v in visitati:
                 percorso = percorso + [v]
                 visitati.add(v)
-                if v == end:
-                    return percorso
+                if v == fine:
+                    return costo, percorso
                 for (prossimo, c) in self.graph[v].iteritems():
                     heapq.heappush(coda, (costo+c, prossimo, percorso))
