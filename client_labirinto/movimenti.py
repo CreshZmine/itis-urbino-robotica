@@ -2,6 +2,7 @@ import socket
 
 HOST = '127.0.0.1'
 PORT = 5436
+VELOCITY_SENSOR = 10
 
 class Robo_moves():
 
@@ -24,6 +25,9 @@ class Robo_moves():
     def sense(self, numero_sensore):
         self.s.sendall('s'+chr(numero_sensore))
         return self.s.recv(4096)
+
+    def velocity(self):
+        return self.sense(VELOCITY_SENSOR)
 
     def turn(self, theta):
         self.s.sendall('t'+str(theta))
