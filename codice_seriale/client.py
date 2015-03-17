@@ -25,10 +25,10 @@ if(com.IsConnceted()):
 		buffer = raw_input("[Msg] --> ")
 		if (buffer == closeCommand):
 			break
-		com.Send(buffer)
+		#com.Send(buffer)
 		
 		## Inizio istruzioni debug ##
-		#com.GoForward()
+		com.GoForward()
 		#com.GoBack()
 		#com.GoBackGrad()
 		#com.GoRight()

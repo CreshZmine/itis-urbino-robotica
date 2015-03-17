@@ -98,17 +98,18 @@ class RoboSerial:
 			# Rimuove il carattere terminatore della comunicazione
 			read=read.replace(self.charTerminator," ")
 			
-			# La salvo come unltima stringa ricevuta
+			# La salvo come ultima stringa ricevuta
 			self.lastRecive = read
 
 			# Effettuo la verifica del checksun
 			cksum = self.GenChecksum(read[lenRead-3], read[lenRead-2])
-			if (cksun == read[lenRead-1]):
+			
+			if (cksum == ord(read[lenRead-1])):
 				return True
 			else:
 				return False
 		else:
-		  	# Da sempre esito negativo alla verifica del checksum quando al connessione seriale non e' disposibile
+		  	# Da sempre esito negativo alla verifica del checksum quando la connessione seriale non e' disposibile
 			return False
 
 	def Send(self, msg):
