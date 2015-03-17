@@ -4,6 +4,11 @@ class Grafo:
     def __init__(self):
         self.graph = {}
 
+    def inserisci_nodo(self, nodo, vicino, costo):
+        if not nodo in self.graph:
+            self.graph[nodo] = {}
+        self.graph[nodo][vicino] = costo
+
     def risolvi(self, inizio, fine):
         #costo, nodo corrente, percorso
         coda = [(0, inizio, [])]
