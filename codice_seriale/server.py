@@ -18,8 +18,10 @@ try:
 	### Riceve i data dalla seriale ###
 	if(com.IsConnceted()):
 		while True:
-			read=com.Recive()
-			print ("[Serial] Recived: " + read) # Print serial buffer
+			if(com.Recive()):
+				print ("[Serial] Recived (good): "+ com.lastRecive)
+			else:
+				print ("[Serial] Recived (bad): "+ com.lastRecive)
 			
 			## Inizio istruzioni debug ##
 			print ("[Debug] Buffer: " + com.reciveBuffer) # Stampa il buffer di messaggi ricevuti

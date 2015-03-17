@@ -18,6 +18,10 @@ class RoboSerial:
 		
 		# Variabili aggiuntive
 		self.ser = None # Oggetto per comunicazione seriale
+
+		# Ultimi messaggi inviati/ricevuti
+		self.lastRecive = ""
+		self.lastSend = ""
 		
 		# Buffer di comunicazione
 		self.reciveBuffer = ""
@@ -94,16 +98,25 @@ class RoboSerial:
 			# Rimuove il carattere terminatore della comunicazione
 			read=read.replace(self.charTerminator," ")
 			
-			# Restituisce la stringa ricevuta
-			return read
+			# La salvo come ultima stringa ricevuta
+			self.lastRecive = read
+
+			# Effettuo la verifica del checksun
+			cksum = self.GenChecksum(read[lenRead-3], read[lenRead-2])
+			
+			if (cksum == ord(read[lenRead-1])):
+				return True
+			else:
+				return False
 		else:
-			# Restituisce una stringa vuota perche' la cominicazione non e' disponibile
-			return ""
+		  	# Da sempre esito negativo alla verifica del checksum quando la connessione seriale non e' disposibile
+			return False
 
 	def Send(self, msg):
 		if(self.ser != None):
 			msg+=self.charTerminator
 			self.sendBuffer+=msg
+			self.lastSend = msg
 			self.ser.write(msg)
 	
 	def SendCommand(self, cmd, dato):
