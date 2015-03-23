@@ -20,11 +20,11 @@ class RoboSerial:
 		self.ser = None # Oggetto per comunicazione seriale
 
 		# Ultimi messaggi inviati/ricevuti
-		self.lastRecive = ""
+		self.lastReceive = ""
 		self.lastSend = ""
 		
 		# Buffer di comunicazione
-		self.reciveBuffer = ""
+		self.ReceiveBuffer = ""
 		self.sendBuffer = ""
 	
 	def __del__(self):
@@ -36,7 +36,7 @@ class RoboSerial:
 	# Funzioni per la connessione seriale #
 	#######################################
 	
-	def OpenConnection(self):
+	def openConnection(self):
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
 		# !ATTENZIONE! -> Il Raspberry PI quando la porta seriale UART0 viene inizializzata invia un impulso negativo di 32us sul TX
 		try:
@@ -52,7 +52,7 @@ class RoboSerial:
 				# In caso di errore con la porta alternativa
 				self.ser=None # Imposta "ser" a null per mancata connessione
 				
-	def OpenConnectionPort(self, portCon):
+	def openConnectionPort(self, portCon):
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
 		# !ATTENZIONE! -> Il Raspberry PI quando la porta seriale UART0 viene inizializzata invia un impulso negativo di 32us sul TX
 		try:
@@ -62,12 +62,12 @@ class RoboSerial:
 			# In caso di errore
 			self.ser=None # Imposta "ser" a null per mancata connessione
 
-	def CloseConnection(self):
+	def closeConnection(self):
 		if(self.ser != None):
 			self.ser.close() # Chiude la connessione
 			self.port="" # Modifica la stringa per la porta in uso
 		
-	def IsConnceted(self):
+	def isConnceted(self):
 		# Verifica se la comunicazione e' apera | True se e' apera | False se e' chiusa
 		if(self.ser != None):
 			return True
@@ -78,7 +78,7 @@ class RoboSerial:
 	# Funzioni per l'invio e la ricezione #
 	#######################################
 	
-	def Recive(self):
+	def receive(self):
 		if(self.ser != None):
 			read=""
 			num = 0
@@ -93,13 +93,13 @@ class RoboSerial:
 					read+=self.ser.read(num)
 			
 			# Salva il messaggio ricevuto nel buffer
-			self.reciveBuffer+=read
+			self.ReceiveBuffer+=read
 			
 			# Rimuove il carattere terminatore della comunicazione
 			read=read.replace(self.charTerminator," ")
 			
 			# La salvo come ultima stringa ricevuta
-			self.lastRecive = read
+			self.lastReceive = read
 
 			# Effettuo la verifica del checksun
 			cksum = self.GenChecksum(read[lenRead-3], read[lenRead-2])
@@ -112,14 +112,14 @@ class RoboSerial:
 		  	# Da sempre esito negativo alla verifica del checksum quando la connessione seriale non e' disposibile
 			return False
 
-	def Send(self, msg):
+	def send(self, msg):
 		if(self.ser != None):
 			msg+=self.charTerminator
 			self.sendBuffer+=msg
 			self.lastSend = msg
 			self.ser.write(msg)
 	
-	def SendCommand(self, cmd, dato):
+	def sendCommand(self, cmd, dato):
 		# Schema messaggio generato <comando(char)><dato(8bit)><checksum(8bit)><carattere_terminatore(1byte)>
 		if(self.ser != None):
 			msg=cmd+dato # Compone il messaggio
@@ -128,7 +128,7 @@ class RoboSerial:
 			self.sendBuffer+=msg
 			self.ser.write(msg)
 			
-	def GenChecksum(self, cmd, dato):
+	def genChecksum(self, cmd, dato):
 		# Calcola il checksum partendo dal comando e dal dato passato
 		cmdA=ord(cmd)
 		datoA=ord(dato)
@@ -140,42 +140,47 @@ class RoboSerial:
 	# Inoltro comandi preimpostati #
 	################################
 
-	def GoForward(self):
+	def goForward(self):
 		# Invia un comando di spostamento in avanti
 		if(self.ser != None):
 			self.SendCommand("F","0")
 			
-	def GoBack(self):
+	def goBack(self):
 		# Invia un comando di spostamento indietro
 		if(self.ser != None):
 			self.SendCommand("B","0")
 			
-	def GoBackGrad(self):
+	def goBackGrad(self):
 		# Invia un comando di rotazione di 180 gradi
 		if(self.ser != None):
 			self.SendCommand("I","0")
 			
-	def GoRight(self):
+	def goRight(self):
 		# Invia un comando di spostamento a destra
 		if(self.ser != None):
 			self.SendCommand("R","0")
 			
-	def GoLeft(self):
+	def goLeft(self):
 		# Invia un comando di spostamento a sinistra
 		if(self.ser != None):
 			self.SendCommand("L","0")
 			
-	def GoStop(self):
+	def goStop(self):
 		# Invia un comando di stop
 		if(self.ser != None):
 			self.SendCommand("S","0")
 			
-	def GoGrad(self,grad):
+	def goGrad(self,grad):
 		# Invia un comando di rotazione in gradi
 		if(self.ser != None):
 			self.SendCommand("G",str(grad))
 
-	def RequestSensor(self, idSens):
+	def requestSensor(self, idSens):
 		# Richiede lo stato di un sensore
+		status = False	# Risultato verifica checksum sulla risposta del Tiva alla richiesta
+
 		if(self.ser != None):
 			self.SendCommand("D",str(idSens))
+			status=self.Receive()
+
+		return status
