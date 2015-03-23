@@ -5,7 +5,7 @@
 from RoboSerial import RoboSerial
 
 com=RoboSerial()
-com.OpenConnection()
+com.openConnection()
 
 closeCommand = "exit"
 
@@ -17,7 +17,7 @@ print ("[Info] Character terminator set to (" + com.charTerminator + ")")
 print ("[Info] Enter " + closeCommand + " to close the program")
 
 ### Invia messaggio via seriale ###
-if(com.IsConnceted()):
+if(com.isConnceted()):
 	while True:
 		buffer=""
 		num = 0
@@ -28,19 +28,19 @@ if(com.IsConnceted()):
 		#com.Send(buffer)
 		
 		## Inizio istruzioni debug ##
-		com.GoForward()
-		#com.GoBack()
-		#com.GoBackGrad()
-		#com.GoRight()
-		#com.GoLeft()
-		#com.GoStop()
-		#com.GoGrad(3)
-		#com.RequestSensor(6)
+		com.goForward()
+		#com.goBack()
+		#com.goBackGrad()
+		#com.goRight()
+		#com.goLeft()
+		#com.goStop()
+		#com.goGrad(3)
+		#com.requestSensor(6)
 		print ("[Debug] Buffer: " + com.sendBuffer) # Stampa il buffer di messaggi inviati
 		## Fine istruzioni debug ##
 		
 	print ("\n[Info] Detected close command. The program will be terminated.")
-	com.CloseConnection() # Chiusura della connessione
+	com.closeConnection() # Chiusura della connessione
 	print ("[Info] Serial connection closed.")
 else:
 		print ("\n[Info] Unable to connect to serial.")

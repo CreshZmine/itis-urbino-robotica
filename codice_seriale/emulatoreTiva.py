@@ -1,4 +1,4 @@
-# Raspberry - Server seriale | Corso robotica 2014/15 - ITIS E. Mattei Urbino
+# Emulatore Python per microcontrollore Tiva | Corso robotica 2014/15 - ITIS E. Mattei Urbino
 # Write using Python 2.7
 # To install PySerial -> python -m pip install pyserial
 
@@ -9,6 +9,9 @@ com.openConnection()
 
 try:
 	### Stampa a schermo le informazioni della connessione ###
+	print ("#################################################")
+	print ("# Avvio emulatore Tiva con i seguenti parametri #")
+	print ("#################################################\n")
 	print ("[Info] Serial connection open on port " +  com.port )
 	print ("[Info] Baudrate set to " + str(com.baud) )
 	print ("[Info] Character starter set to (" + com.charStarter + ")")
@@ -22,6 +25,14 @@ try:
 				print ("[Serial] Recived (good): "+ com.lastRecive)
 			else:
 				print ("[Serial] Recived (bad): "+ com.lastRecive)
+			
+			chr = com.lastRecive[0]
+			
+			if (chr == "F" or chr == "B" or chr == "I" or chr == "S" or chr == "R" or chr == "L")
+				com.sendCommand(chr, "1")
+			else
+				com.sendCommand("E", "0")
+			
 			
 			## Inizio istruzioni debug ##
 			print ("[Debug] Buffer: " + com.reciveBuffer) # Stampa il buffer di messaggi ricevuti
