@@ -29,14 +29,15 @@ if(com.isConnceted()):
 		
 		## Inizio istruzioni debug ##
 		print(com.goForward())
-		#print(com.goBack())
-		#print(com.goBackGrad()
-		#print(com.goRight())
-		#print(com.goLeft())
-		#print(com.goStop())
-		#print(com.goGrad(3))
+		print(com.goBack())
+		print(com.goBackGrad())
+		print(com.goRight())
+		print(com.goLeft())
+		print(com.goStop())
+		print(com.goGrad(3))
 		#print(com.requestSensor(6))
 		print ("[Debug] Buffer: " + com.sendBuffer) # Stampa il buffer di messaggi inviati
+		print ("[Debug] Buffer: " + com.receiveBuffer) # Stampa il buffer di messaggi ricevuti
 		## Fine istruzioni debug ##
 		
 	print ("\n[Info] Detected close command. The program will be terminated.")

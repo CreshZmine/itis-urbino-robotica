@@ -102,7 +102,7 @@ class RoboSerial:
 			self.lastReceive = read
 
 			# Effettuo la verifica del checksun
-			cksum = self.genChecksum(read[lenRead-3], read[lenRead-2])
+			cksum = self.genChecksum16(read[lenRead-4], read[lenRead-3], read[lenRead-2])
 			
 			if (cksum == ord(read[lenRead-1])):
 				return True
@@ -127,12 +127,30 @@ class RoboSerial:
 			msg+=self.charTerminator # Aggiunge il carattere terminatore
 			self.sendBuffer+=msg
 			self.ser.write(msg)
+	
+	def sendCommand16(self, cmd, dato1, dato0):
+		# Schema messaggio generato <comando(char)><dato(16bit)><checksum(1byte)><carattere_terminatore(1byte)>
+		if(self.ser != None):
+			msg=cmd+dato1+dato0 # Compone il messaggio
+			msg+=chr(self.genChecksum16(cmd,dato1,dato0)) # Genera il checksum
+			msg+=self.charTerminator # Aggiunge il carattere terminatore
+			self.sendBuffer+=msg
+			self.ser.write(msg)
 			
 	def genChecksum(self, cmd, dato):
 		# Calcola il checksum partendo dal comando e dal dato passato
 		cmdA=ord(cmd)
 		datoA=ord(dato)
 		chsm=cmdA ^ datoA ^ 0xA9
+		
+		return chsm
+		
+	def genChecksum16(self, cmd, dato1, dato0):
+		# Calcola il checksum partendo dal comando e dal dato passato
+		cmdA=ord(cmd)
+		datoA=ord(dato1)
+		datoB=ord(dato0)
+		chsm=cmdA ^ datoA ^ datoB ^ 0xA9
 		
 		return chsm
 		
@@ -146,9 +164,9 @@ class RoboSerial:
 			self.sendCommand("F","0")
 			
 		if(self.receive()):
-			return self.lastReceive[1],"0"
+			return self.lastReceive[2],"0"
 		else:
-			return self.lastReceive[1],"1"
+			return self.lastReceive[2],"1"
 			
 	def goBack(self):
 		# Invia un comando di spostamento indietro
@@ -156,9 +174,9 @@ class RoboSerial:
 			self.sendCommand("B","0")
 			
 		if(self.receive()):
-			return self.lastReceive[1],"0"
+			return self.lastReceive[2],"0"
 		else:
-			return self.lastReceive[1],"1"
+			return self.lastReceive[2],"1"
 			
 	def goBackGrad(self):
 		# Invia un comando di rotazione di 180 gradi
@@ -166,9 +184,9 @@ class RoboSerial:
 			self.sendCommand("I","0")
 			
 		if(self.receive()):
-			return self.lastReceive[1],"0"
+			return self.lastReceive[2],"0"
 		else:
-			return self.lastReceive[1],"1"
+			return self.lastReceive[2],"1"
 			
 	def goRight(self):
 		# Invia un comando di spostamento a destra
@@ -176,9 +194,9 @@ class RoboSerial:
 			self.sendCommand("R","0")
 			
 		if(self.receive()):
-			return self.lastReceive[1],"0"
+			return self.lastReceive[2],"0"
 		else:
-			return self.lastReceive[1],"1"
+			return self.lastReceive[2],"1"
 			
 	def goLeft(self):
 		# Invia un comando di spostamento a sinistra
@@ -186,9 +204,9 @@ class RoboSerial:
 			self.sendCommand("L","0")
 		
 		if(self.receive()):
-			return self.lastReceive[1],"0"
+			return self.lastReceive[2],"0"
 		else:
-			return self.lastReceive[1],"1"
+			return self.lastReceive[2],"1"
 			
 	def goStop(self):
 		# Invia un comando di stop
@@ -196,9 +214,9 @@ class RoboSerial:
 			self.sendCommand("S","0")
 			
 		if(self.receive()):
-			return self.lastReceive[1],"0"
+			return self.lastReceive[2],"0"
 		else:
-			return self.lastReceive[1],"1"
+			return self.lastReceive[2],"1"
 			
 	def goGrad(self,grad):
 		# Invia un comando di rotazione in gradi
@@ -206,9 +224,9 @@ class RoboSerial:
 			self.sendCommand("G",str(grad))
 			
 		if(self.receive()):
-			return self.lastReceive[1],"0"
+			return self.lastReceive[2],"0"
 		else:
-			return self.lastReceive[1],"1"
+			return self.lastReceive[2],"1"
 
 	def requestSensor(self, idSens):
 		# Richiede lo stato di un sensore

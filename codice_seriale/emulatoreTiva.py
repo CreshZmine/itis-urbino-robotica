@@ -29,10 +29,10 @@ try:
 			
 			chr = com.lastReceive[0]
 			
-			if (chr == "F" or chr == "B" or chr == "I" or chr == "S" or chr == "R" or chr == "L"):
-				com.sendCommand(chr, "1")
+			if (chr == "F" or chr == "B" or chr == "I" or chr == "S" or chr == "R" or chr == "L" or chr == "G"):
+				com.sendCommand16(chr,"0","1")
 			else:
-				com.sendCommand("E", "0")
+				com.sendCommand16("E","0","0")
 			
 			## Inizio istruzioni debug ##
 			print ("[Debug] Buffer: " + com.receiveBuffer) # Stampa il buffer di messaggi ricevuti
