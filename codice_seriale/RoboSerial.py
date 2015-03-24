@@ -54,7 +54,7 @@ class RoboSerial:
 				
 	def openConnectionPort(self, portCon):
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
-		# !ATTENZIONE! -> Il Raspberry PI quando la porta seriale UART0 viene inizializzata invia un impulso negativo di 32us sul TX
+		# !ATTENZIONE! -> Su Raspberry PI quando la porta seriale UART0 viene inizializzata viene inviato un impulso negativo di 32us sul TX
 		try:
 			self.ser = serial.Serial(portCon, self.baud)  # Tentativo di connessione
 			self.port=portCon
@@ -64,11 +64,15 @@ class RoboSerial:
 
 	def closeConnection(self):
 		if(self.ser != None):
-			self.ser.close() # Chiude la connessione
-			self.port="" # Modifica la stringa per la porta in uso
+			self.ser.close() 	# Chiude la connessione
+			self.port="" 		# Modifica la stringa per la porta in uso
 		
 	def isConnceted(self):
-		# Verifica se la comunicazione e' apera | True se e' apera | False se e' chiusa
+		# Verifica se la comunicazione e' aperta
+		# Valori di ritorno:
+		# 	-> True se e' apera
+		# 	-> False se e' chiusa
+		
 		if(self.ser != None):
 			return True
 		else:
@@ -89,21 +93,15 @@ class RoboSerial:
 				if (lenRead > 0 and read[lenRead] == self.charTerminator): # Rileva il carattere di fine comunicazione
 					break
 				elif (num!=0):
-					# Legge dalla seriale
-					read+=self.ser.read(num)
+					read+=self.ser.read(num) # Legge dalla seriale
 			
-			# Salva il messaggio ricevuto nel buffer
-			self.receiveBuffer+=read
+			# Manipolazione e verifica del messaggio ricevuto
+			self.receiveBuffer+=read														# Salva il messaggio ricevuto nel buffer
+			read=read.replace(self.charTerminator," ") 										# Rimuove il carattere terminatore della comunicazione
+			self.lastReceive = read 														# La salvo come ultima stringa ricevuta
+			cksum = self.genChecksum16(read[lenRead-4], read[lenRead-3], read[lenRead-2])	# Genero il checksum per la verifica dell'integrita' del messaggio
 			
-			# Rimuove il carattere terminatore della comunicazione
-			read=read.replace(self.charTerminator," ")
-			
-			# La salvo come ultima stringa ricevuta
-			self.lastReceive = read
-
-			# Effettuo la verifica del checksun
-			cksum = self.genChecksum16(read[lenRead-4], read[lenRead-3], read[lenRead-2])
-			
+			# Verifico se il checksum generato corrisponde con quello ricevuto
 			if (cksum == ord(read[lenRead-1])):
 				return True
 			else:
@@ -120,38 +118,52 @@ class RoboSerial:
 			self.ser.write(msg)
 	
 	def sendCommand(self, cmd, dato):
-		# Schema messaggio generato <comando(char)><dato(8bit)><checksum(8bit)><carattere_terminatore(1byte)>
+		# Schema messaggio generato <comando(1byte)><dato(1byte)><checksum(1byte)><carattere_terminatore(1byte)>
+		# Secondo lo standard di comunicazione questo e' un messaggio tipico del Raspberry
+		
 		if(self.ser != None):
-			msg=cmd+dato # Compone il messaggio
-			msg+=chr(self.genChecksum(cmd,dato)) # Genera il checksum
-			msg+=self.charTerminator # Aggiunge il carattere terminatore
-			self.sendBuffer+=msg
-			self.ser.write(msg)
+			msg=cmd+dato 							# Compone il messaggio
+			msg+=chr(self.genChecksum(cmd,dato)) 	# Genera il checksum
+			msg+=self.charTerminator 				# Aggiunge il carattere terminatore
+			self.sendBuffer+=msg 					# Salva il messaggio nel buffer dei messaggi inviati
+			self.ser.write(msg) 					# Invia il messaggio
 	
 	def sendCommand16(self, cmd, dato1, dato0):
-		# Schema messaggio generato <comando(char)><dato(16bit)><checksum(1byte)><carattere_terminatore(1byte)>
+		# Schema messaggio generato <comando(1byte)><dato(2byte)><checksum(1byte)><carattere_terminatore(1byte)>
+		# Secondo lo standard di comunicazione questo e' un messaggio tipico del Tiva
+		
 		if(self.ser != None):
-			msg=cmd+dato1+dato0 # Compone il messaggio
-			msg+=chr(self.genChecksum16(cmd,dato1,dato0)) # Genera il checksum
-			msg+=self.charTerminator # Aggiunge il carattere terminatore
-			self.sendBuffer+=msg
-			self.ser.write(msg)
+			msg=cmd+dato1+dato0 							# Compone il messaggio
+			msg+=chr(self.genChecksum16(cmd,dato1,dato0)) 	# Genera il checksum
+			msg+=self.charTerminator 						# Aggiunge il carattere terminatore
+			self.sendBuffer+=msg 							# Salva il messaggio nel buffer dei messaggi inviati
+			self.ser.write(msg) 							# Invia il messaggio
 			
 	def genChecksum(self, cmd, dato):
-		# Calcola il checksum partendo dal comando e dal dato passato
+		# Calcola il checksum partendo dal comando e dal dato a 8 bit passato
+		
+		# Viene prelevato il valore ASCII del carattere
 		cmdA=ord(cmd)
 		datoA=ord(dato)
+		
+		# Viene fatto lo XOR con tutti i caratteri e il valore 0xA9
 		chsm=cmdA ^ datoA ^ 0xA9
 		
+		# Viene restituito il risultato
 		return chsm
 		
 	def genChecksum16(self, cmd, dato1, dato0):
-		# Calcola il checksum partendo dal comando e dal dato passato
+		# Calcola il checksum partendo dal comando e dal dato a 16 bit passato
 		cmdA=ord(cmd)
+		
+		# Viene prelevato il valore ASCII del carattere
 		datoA=ord(dato1)
 		datoB=ord(dato0)
+		
+		# Viene fatto lo XOR con tutti i caratteri e il valore 0xA9
 		chsm=cmdA ^ datoA ^ datoB ^ 0xA9
 		
+		# Viene restituito il risultato
 		return chsm
 		
 	################################
@@ -163,70 +175,84 @@ class RoboSerial:
 		if(self.ser != None):
 			self.sendCommand("F","0")
 			
-		if(self.receive()):
-			return self.lastReceive[2],"0"
-		else:
-			return self.lastReceive[2],"1"
+			if(self.receive()):
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"0"
+			else:
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"1"
 			
 	def goBack(self):
 		# Invia un comando di spostamento indietro
 		if(self.ser != None):
 			self.sendCommand("B","0")
 			
-		if(self.receive()):
-			return self.lastReceive[2],"0"
-		else:
-			return self.lastReceive[2],"1"
+			if(self.receive()):
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"0"
+			else:
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"1"
 			
 	def goBackGrad(self):
 		# Invia un comando di rotazione di 180 gradi
 		if(self.ser != None):
 			self.sendCommand("I","0")
 			
-		if(self.receive()):
-			return self.lastReceive[2],"0"
-		else:
-			return self.lastReceive[2],"1"
+			if(self.receive()):
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"0"
+			else:
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"1"
 			
 	def goRight(self):
 		# Invia un comando di spostamento a destra
 		if(self.ser != None):
 			self.sendCommand("R","0")
 			
-		if(self.receive()):
-			return self.lastReceive[2],"0"
-		else:
-			return self.lastReceive[2],"1"
+			if(self.receive()):
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"0"
+			else:
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"1"
 			
 	def goLeft(self):
 		# Invia un comando di spostamento a sinistra
 		if(self.ser != None):
 			self.sendCommand("L","0")
 		
-		if(self.receive()):
-			return self.lastReceive[2],"0"
-		else:
-			return self.lastReceive[2],"1"
+			if(self.receive()):
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"0"
+			else:
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"1"
 			
 	def goStop(self):
 		# Invia un comando di stop
 		if(self.ser != None):
 			self.sendCommand("S","0")
 			
-		if(self.receive()):
-			return self.lastReceive[2],"0"
-		else:
-			return self.lastReceive[2],"1"
+			if(self.receive()):
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"0"
+			else:
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"1"
 			
 	def goGrad(self,grad):
 		# Invia un comando di rotazione in gradi
 		if(self.ser != None):
 			self.sendCommand("G",str(grad))
 			
-		if(self.receive()):
-			return self.lastReceive[2],"0"
-		else:
-			return self.lastReceive[2],"1"
+			if(self.receive()):
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"0"
+			else:
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"1"
 
 	def requestSensor(self, idSens):
 		# Richiede lo stato di un sensore
@@ -234,6 +260,10 @@ class RoboSerial:
 
 		if(self.ser != None):
 			self.sendCommand("D",str(idSens))
-			status=self.Receive()
-
-		return status
+			
+			if(self.receive()):
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"0"
+			else:
+				ret=self.lastReceive[1]+self.lastReceive[2]
+				return ret,"1"
