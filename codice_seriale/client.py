@@ -28,14 +28,14 @@ if(com.isConnceted()):
 		#com.Send(buffer)
 		
 		## Inizio istruzioni debug ##
-		com.goForward()
-		#com.goBack()
-		#com.goBackGrad()
-		#com.goRight()
-		#com.goLeft()
-		#com.goStop()
-		#com.goGrad(3)
-		#com.requestSensor(6)
+		print(com.goForward())
+		#print(com.goBack())
+		#print(com.goBackGrad()
+		#print(com.goRight())
+		#print(com.goLeft())
+		#print(com.goStop())
+		#print(com.goGrad(3))
+		#print(com.requestSensor(6))
 		print ("[Debug] Buffer: " + com.sendBuffer) # Stampa il buffer di messaggi inviati
 		## Fine istruzioni debug ##
 		

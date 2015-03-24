@@ -24,7 +24,7 @@ class RoboSerial:
 		self.lastSend = ""
 		
 		# Buffer di comunicazione
-		self.ReceiveBuffer = ""
+		self.receiveBuffer = ""
 		self.sendBuffer = ""
 	
 	def __del__(self):
@@ -93,7 +93,7 @@ class RoboSerial:
 					read+=self.ser.read(num)
 			
 			# Salva il messaggio ricevuto nel buffer
-			self.ReceiveBuffer+=read
+			self.receiveBuffer+=read
 			
 			# Rimuove il carattere terminatore della comunicazione
 			read=read.replace(self.charTerminator," ")
@@ -102,7 +102,7 @@ class RoboSerial:
 			self.lastReceive = read
 
 			# Effettuo la verifica del checksun
-			cksum = self.GenChecksum(read[lenRead-3], read[lenRead-2])
+			cksum = self.genChecksum(read[lenRead-3], read[lenRead-2])
 			
 			if (cksum == ord(read[lenRead-1])):
 				return True
@@ -123,7 +123,7 @@ class RoboSerial:
 		# Schema messaggio generato <comando(char)><dato(8bit)><checksum(8bit)><carattere_terminatore(1byte)>
 		if(self.ser != None):
 			msg=cmd+dato # Compone il messaggio
-			msg+=chr(self.GenChecksum(cmd,dato)) # Genera il checksum
+			msg+=chr(self.genChecksum(cmd,dato)) # Genera il checksum
 			msg+=self.charTerminator # Aggiunge il carattere terminatore
 			self.sendBuffer+=msg
 			self.ser.write(msg)
@@ -143,44 +143,79 @@ class RoboSerial:
 	def goForward(self):
 		# Invia un comando di spostamento in avanti
 		if(self.ser != None):
-			self.SendCommand("F","0")
+			self.sendCommand("F","0")
+			
+		if(self.receive()):
+			return self.lastReceive[1],"0"
+		else:
+			return self.lastReceive[1],"1"
 			
 	def goBack(self):
 		# Invia un comando di spostamento indietro
 		if(self.ser != None):
-			self.SendCommand("B","0")
+			self.sendCommand("B","0")
+			
+		if(self.receive()):
+			return self.lastReceive[1],"0"
+		else:
+			return self.lastReceive[1],"1"
 			
 	def goBackGrad(self):
 		# Invia un comando di rotazione di 180 gradi
 		if(self.ser != None):
-			self.SendCommand("I","0")
+			self.sendCommand("I","0")
+			
+		if(self.receive()):
+			return self.lastReceive[1],"0"
+		else:
+			return self.lastReceive[1],"1"
 			
 	def goRight(self):
 		# Invia un comando di spostamento a destra
 		if(self.ser != None):
-			self.SendCommand("R","0")
+			self.sendCommand("R","0")
+			
+		if(self.receive()):
+			return self.lastReceive[1],"0"
+		else:
+			return self.lastReceive[1],"1"
 			
 	def goLeft(self):
 		# Invia un comando di spostamento a sinistra
 		if(self.ser != None):
-			self.SendCommand("L","0")
+			self.sendCommand("L","0")
+		
+		if(self.receive()):
+			return self.lastReceive[1],"0"
+		else:
+			return self.lastReceive[1],"1"
 			
 	def goStop(self):
 		# Invia un comando di stop
 		if(self.ser != None):
-			self.SendCommand("S","0")
+			self.sendCommand("S","0")
+			
+		if(self.receive()):
+			return self.lastReceive[1],"0"
+		else:
+			return self.lastReceive[1],"1"
 			
 	def goGrad(self,grad):
 		# Invia un comando di rotazione in gradi
 		if(self.ser != None):
-			self.SendCommand("G",str(grad))
+			self.sendCommand("G",str(grad))
+			
+		if(self.receive()):
+			return self.lastReceive[1],"0"
+		else:
+			return self.lastReceive[1],"1"
 
 	def requestSensor(self, idSens):
 		# Richiede lo stato di un sensore
 		status = False	# Risultato verifica checksum sulla risposta del Tiva alla richiesta
 
 		if(self.ser != None):
-			self.SendCommand("D",str(idSens))
+			self.sendCommand("D",str(idSens))
 			status=self.Receive()
 
 		return status
