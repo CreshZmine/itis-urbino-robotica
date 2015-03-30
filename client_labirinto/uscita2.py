@@ -1,25 +1,23 @@
 #!/usr/bin/python
 import pyglet
+import time
 from pyglet.gl import *
 import random
-import movimenti
+import RoboSerial
 import math
 import sys
-
-if len(sys.argv) < 6:
-    print "Usage: python " + sys.argv[0] + " x_uscita y_uscita x_robot y_robot angle"
-    exit(1)
 
 '''
 robot[0] = x
 robot[1] = y
 '''
-robot = [sys.argv[3], sys.argv[4]]
+robot = [200, 200]
 
-robo_dx = math.cos(math.radians((float(sys.argv[5]))))
-robo_dy = math.sin(math.radians((float(sys.argv[5]))))
+robo_dx = 0
+robo_dy = 1
 
-mov = movimenti.Robo_moves()
+mov = RoboSerial.RoboSerial()
+mov.openConnection()
 
 def checkValidita(coor):
     if grid[coor[0]][coor[1]] == 1:
@@ -52,7 +50,7 @@ def elabora_sensore(theta, angolo_sensore):
         cx, cy = cx+dx, cy+dy
 
 def elabora_velocita(theta, t):
-    vel_dritto = robot.velocity()
+    vel_dritto = float(mov.sense(1)) #Cambiare 1 con il sensore di velocita
     vel = []
     vel.append(vel_dritto*math.cos(theta))
     vel.append(vel_dritto*math.sin(theta))
@@ -62,14 +60,22 @@ def elabora_velocita(theta, t):
 
 #moves = movimenti.Robo_moves()
 
-#'''
-#0 - vuoto
-#1 - muro
-#2 - non esplorato
+'''
+0 - vuoto
+1 - muro
+2 - non esplorato
 
-#grid viene inizializzato come non esplorato
-#'''
+grid viene inizializzato come non esplorato
+'''
 grid = [[int(2) for x in xrange(401)] for y in xrange(401)]
+
+theta = math.pi/2;
+
+while True:
+    start_time = time.time()
+    elabora_sensore(theta, 0)
+    elapsed = time.time() - start_time
+    elabora_velocita(theta, elapsed)
 
 def nodi():
     d = 4.0
