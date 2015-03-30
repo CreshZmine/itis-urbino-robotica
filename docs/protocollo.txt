@@ -1,6 +1,6 @@
 ﻿== PROPOSTA PROTOCOLLO DI COMUNICAZIONE ==
 == TIVA - RASPBERRY PI ==
-rev. 1C (by Andrea Crescentini)
+rev. 1D (by Andrea Crescentini e Prof Zandri)
 
 =====================
 Collegamento fisico:
@@ -24,7 +24,7 @@ MESSAGGI DEL RASPBERRY (4byte):
 ===============================
 (direttive oppure richieste letture sensori)
 
-<comando(char)><dato(8bit)><checksum(8bit)><carattere_terminatore(1byte)>
+<comando(8bit)><dato(8bit)><checksum(8bit)><carattere_terminatore(8bit)>
 
 !Nota! - Il tiva prenderà in considerazione solamente i 3byte prima del carattere terminatore
 
@@ -42,39 +42,39 @@ G - direzione in gradi assoluta(?!?!?)
     (relativa all'angolo di inizio percorso)
 D - richiesta di informazzione di un determinato sensore
 ____________________________________
-comando           |  dato
+comando		|  dato
 ------------------------------------
-G                 |  Gradi
-                  |
-D                 |  ID sensore
-                  |
-E                 |  Errore (anche su raspberry?)
-
-Gestione errori:
-    raspberry ripete la richiesta se non riceve risposta corretta (timeout mezzo secondo??)
-    oppure se riceve "E" (errore)
+G		|  Gradi
+D 		|  ID sensore
 
 ==========================
 MESSAGGI DEL TIVA: (4byte)
 ==========================
 (fornitura di informazioni richieste e non richieste)
 
-<tag><dato16bit><checksum>
+<tag(8bit)><dato(16bit)><checksum(8bit)><carattere_terminatore(8bit)>
 
 ____________________________________
 tag (1byte)       |  dato (16bit)
 ------------------------------------
 numero sensore    |  misura sensore
                   |
-comando ricevuto  |  True/False
-(F/B/I/S/R/L/G)   |  (comando accettato/eseguito o no)
+comando ricevuto  |  True/False o valore di 
+(F/B/I/S/R/L/G)   |  spostamento, rotazione, ecc
                   |
 E                 |  Errore
 
-Gestione errori:
-    tiva ignora richieste errate
-    oppure invia "E"
-    oppure invia comunque a rotazione tutte le letture dei sensori.
+Sensori:
+
+____________________________________
+ID		| Tipologia
+------------------------------------
+1 .. 5		| Distanza (cm)
+6		| Angolo (0 – 180°)
+7		| Luminosità (0 – 255)
+8		| Temperatura (20 – 40)
+9		| Velocità (cm/s)
+10		| Distanza percorsa (cm)
 
 =========
 Checksum: 
