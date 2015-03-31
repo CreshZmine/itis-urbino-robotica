@@ -259,7 +259,7 @@ class RoboSerial:
 		status = False	# Risultato verifica checksum sulla risposta del Tiva alla richiesta
 
 		if(self.ser != None):
-			self.sendCommand("D",str(idSens))
+			self.sendCommand("D",chr(idSens))
 
 			if(self.receive()):
 				ret=self.lastReceive[1]+self.lastReceive[2]
