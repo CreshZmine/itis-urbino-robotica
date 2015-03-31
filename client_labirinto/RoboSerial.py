@@ -69,7 +69,7 @@ class RoboSerial:
 			self.ser.close() 	# Chiude la connessione
 			self.port="" 		# Modifica la stringa per la porta in uso
 
-	def isConnceted(self):
+	def isConnected(self):
 		# Verifica se la comunicazione e' aperta
 		# Valori di ritorno:
 		# 	-> True se e' apera
@@ -85,7 +85,7 @@ class RoboSerial:
 	#######################################
 
 	def receive(self):
-		if(self.ser != None):
+		if(self.isConnected()):
 			read=""
 			num = 0
 			lenRead = 0
@@ -113,7 +113,7 @@ class RoboSerial:
 			return False
 
 	def send(self, msg):
-		if(self.ser != None):
+		if(self.isConnected()):
 			msg+=self.charTerminator
 			self.sendBuffer+=msg
 			self.lastSend = msg
@@ -123,7 +123,7 @@ class RoboSerial:
 		# Schema messaggio generato <comando(1byte)><dato(1byte)><checksum(1byte)><carattere_terminatore(1byte)>
 		# Secondo lo standard di comunicazione questo e' un messaggio tipico del Raspberry
 
-		if(self.ser != None):
+		if(self.isConnected()):
 			msg=cmd+dato 							# Compone il messaggio
 			msg+=chr(self.genChecksum(cmd,dato)) 	# Genera il checksum
 			msg+=self.charTerminator 				# Aggiunge il carattere terminatore
@@ -134,7 +134,7 @@ class RoboSerial:
 		# Schema messaggio generato <comando(1byte)><dato(2byte)><checksum(1byte)><carattere_terminatore(1byte)>
 		# Secondo lo standard di comunicazione questo e' un messaggio tipico del Tiva
 
-		if(self.ser != None):
+		if(self.isConnected()):
 			msg=cmd+dato1+dato0 							# Compone il messaggio
 			msg+=chr(self.genChecksum16(cmd,dato1,dato0)) 	# Genera il checksum
 			msg+=self.charTerminator 						# Aggiunge il carattere terminatore
@@ -174,7 +174,7 @@ class RoboSerial:
 
 	def goForward(self):
 		# Invia un comando di spostamento in avanti
-		if(self.ser != None):
+		if(self.isConnected()):
 			self.sendCommand("F","0")
 
 			if(self.receive()):
@@ -186,7 +186,7 @@ class RoboSerial:
 
 	def goBack(self):
 		# Invia un comando di spostamento indietro
-		if(self.ser != None):
+		if(self.isConnected()):
 			self.sendCommand("B","0")
 
 			if(self.receive()):
@@ -198,7 +198,7 @@ class RoboSerial:
 
 	def goBackGrad(self):
 		# Invia un comando di rotazione di 180 gradi
-		if(self.ser != None):
+		if(self.isConnected()):
 			self.sendCommand("I","0")
 
 			if(self.receive()):
@@ -210,7 +210,7 @@ class RoboSerial:
 
 	def goRight(self):
 		# Invia un comando di spostamento a destra
-		if(self.ser != None):
+		if(self.isConnected()):
 			self.sendCommand("R","0")
 
 			if(self.receive()):
@@ -222,7 +222,7 @@ class RoboSerial:
 
 	def goLeft(self):
 		# Invia un comando di spostamento a sinistra
-		if(self.ser != None):
+		if(self.isConnected()):
 			self.sendCommand("L","0")
 
 			if(self.receive()):
@@ -234,7 +234,7 @@ class RoboSerial:
 
 	def goStop(self):
 		# Invia un comando di stop
-		if(self.ser != None):
+		if(self.isConnected()):
 			self.sendCommand("S","0")
 
 			if(self.receive()):
@@ -246,7 +246,7 @@ class RoboSerial:
 
 	def goGrad(self,grad):
 		# Invia un comando di rotazione in gradi
-		if(self.ser != None):
+		if(self.isConnected()):
 			self.sendCommand("G",str(grad))
 
 			if(self.receive()):
@@ -260,7 +260,7 @@ class RoboSerial:
 		# Richiede lo stato di un sensore
 		status = False	# Risultato verifica checksum sulla risposta del Tiva alla richiesta
 
-		if(self.ser != None):
+		if(self.isConnected()):
 			self.sendCommand("D",chr(idSens))
 
 			if(self.receive()):
