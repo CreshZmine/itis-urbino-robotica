@@ -179,10 +179,10 @@ class RoboSerial:
 
 			if(self.receive()):
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"0"
+				return ret,True
 			else:
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"1"
+				return ret,False
 
 	def goBack(self):
 		# Invia un comando di spostamento indietro
@@ -191,10 +191,10 @@ class RoboSerial:
 
 			if(self.receive()):
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"0"
+				return ret,True
 			else:
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"1"
+				return ret,False
 
 	def goBackGrad(self):
 		# Invia un comando di rotazione di 180 gradi
@@ -203,10 +203,10 @@ class RoboSerial:
 
 			if(self.receive()):
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"0"
+				return ret,True
 			else:
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"1"
+				return ret,False
 
 	def goRight(self):
 		# Invia un comando di spostamento a destra
@@ -215,10 +215,10 @@ class RoboSerial:
 
 			if(self.receive()):
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"0"
+				return ret,True
 			else:
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"1"
+				return ret,False
 
 	def goLeft(self):
 		# Invia un comando di spostamento a sinistra
@@ -227,10 +227,10 @@ class RoboSerial:
 
 			if(self.receive()):
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"0"
+				return ret,True
 			else:
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"1"
+				return ret,False
 
 	def goStop(self):
 		# Invia un comando di stop
@@ -239,10 +239,10 @@ class RoboSerial:
 
 			if(self.receive()):
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"0"
+				return ret,True
 			else:
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"1"
+				return ret,False
 
 	def goGrad(self,grad):
 		# Invia un comando di rotazione in gradi
@@ -251,10 +251,10 @@ class RoboSerial:
 
 			if(self.receive()):
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"0"
+				return ret,True
 			else:
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"1"
+				return ret,False
 
 	def requestSensor(self, idSens):
 		# Richiede lo stato di un sensore
@@ -265,7 +265,7 @@ class RoboSerial:
 
 			if(self.receive()):
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"0"
+				return ret,True
 			else:
 				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,"1"
+				return ret,False
