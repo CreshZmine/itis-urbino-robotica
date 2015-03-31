@@ -1,11 +1,12 @@
 #!/usr/bin/python
-import pyglet
-import time
 from pyglet.gl import *
+import math
+import pyglet
 import random
 import RoboSerial
-import math
+import sensore
 import sys
+import time
 
 '''
 robot[0] = x
@@ -18,6 +19,27 @@ robo_dy = 1
 
 mov = RoboSerial.RoboSerial()
 mov.openConnection()
+
+sensori_distanza = []
+sensori_distanza.append(sensore.Sensore(1, mov))
+sensori_distanza[-1].angolo = 0
+sensori_distanza.append(sensore.Sensore(2, mov))
+sensori_distanza[-1].angolo = 0
+sensori_distanza.append(sensore.Sensore(3, mov))
+sensori_distanza[-1].angolo = 0
+sensori_distanza.append(sensore.Sensore(4, mov))
+sensori_distanza[-1].angolo = 0
+sensori_distanza.append(sensore.Sensore(5, mov))
+sensori_distanza[-1].angolo = 0
+
+sensore_angolo = sensore.Sensore(6, mov)
+sensore_luminosita = sensore.Sensore(7, mov)
+
+sensore_temperatura = sensore.Sensore(8, mov)
+sensore_temperatura.angolo = 0
+
+sensore_velocita = sensore.Sensore(9, mov)
+sensore_distanza_p = sensore.Sensore(10, mov) #Distanza percorsa
 
 def checkValidita(coor):
     if grid[coor[0]][coor[1]] == 1:
