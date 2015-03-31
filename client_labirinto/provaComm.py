@@ -2,6 +2,8 @@ import RoboSerial
 
 robo = RoboSerial.RoboSerial()
 
+robo.openConnection()
+
 print robo.goForward()
 print robo.goBack()
 print robo.goBackGrad()
