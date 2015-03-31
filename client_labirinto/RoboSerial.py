@@ -42,15 +42,17 @@ class RoboSerial:
 		try:
 			self.ser = serial.Serial(self.defPort, self.baud)  # Tentativo di connessione con la porta principale
 			self.port=self.defPort
-
+			return True
 		except:
 			# In caso di errore con la porta principale
 			try:
 				self.ser = serial.Serial(self.altPort, self.baud)  # Tentativo di connessione con la porta alternativa
 				self.port=self.altPort
+				return True
 			except:
 				# In caso di errore con la porta alternativa
 				self.ser=None # Imposta "ser" a null per mancata connessione
+				return False
 
 	def openConnectionPort(self, portCon):
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
