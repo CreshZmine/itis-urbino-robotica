@@ -2,11 +2,11 @@ import RoboSerial
 
 robo = RoboSerial.RoboSerial()
 
-robo.goForward()
-robo.goBack()
-robo.goBackGrad()
-robo.goRight()
-robo.goLeft()
-robo.goStop()
+print robo.goForward()
+print robo.goBack()
+print robo.goBackGrad()
+print robo.goRight()
+print robo.goLeft()
+print robo.goStop()
 for i in range(1, 10):
-    robo.requestSensor(i)
+    print robo.requestSensor(i)
