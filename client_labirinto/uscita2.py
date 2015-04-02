@@ -27,15 +27,25 @@ mov.openConnection()
 
 sensori_distanza = []
 sensori_distanza.append(sensore.Sensore(1, mov))
-sensori_distanza[-1].angolo = 0
+sensori_distanza[-1].dx = 0
+sensori_distanza[-1].dy = 0
+sensori_distanza[-1].offset = 0
 sensori_distanza.append(sensore.Sensore(2, mov))
-sensori_distanza[-1].angolo = 0
+sensori_distanza[-1].dx = 0
+sensori_distanza[-1].dy = 0
+sensori_distanza[-1].offset = 0
 sensori_distanza.append(sensore.Sensore(3, mov))
-sensori_distanza[-1].angolo = 0
+sensori_distanza[-1].dx = 0
+sensori_distanza[-1].dy = 0
+sensori_distanza[-1].offset = 0
 sensori_distanza.append(sensore.Sensore(4, mov))
-sensori_distanza[-1].angolo = 0
+sensori_distanza[-1].dx = 0
+sensori_distanza[-1].dy = 0
+sensori_distanza[-1].offset = 0
 sensori_distanza.append(sensore.Sensore(5, mov))
-sensori_distanza[-1].angolo = 0
+sensori_distanza[-1].dx = 0
+sensori_distanza[-1].dy = 0
+sensori_distanza[-1].offset = 0
 
 sensore_angolo = sensore.Sensore(6, mov)
 sensore_luminosita = sensore.Sensore(7, mov)
