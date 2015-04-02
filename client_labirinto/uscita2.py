@@ -69,21 +69,23 @@ def distanza((x0,y0),(x1,y1)):
     dy =y1-y0
     return tp(dx,dy)
 
-def elabora_sensore(theta, angolo_sensore):
+def elabora_sensore(theta, sensore):
     '''
     theta e' l'angolo del robot rispetto al punto iniziale
-    angolo_sensore e' l'angolo del sensore rispetto al davanti del robot
+    sensore e' il sensore da analizzare
     '''
-    dist = float(mov.sense(0))
-    x_coor = robot[0]+dist*math.cos(theta+angolo_sensore)
-    y_coor = robot[1]+dist*math.sin(theta+angolo_sensore)
+    dist = sensore.leggi()
+    x_sensore = sensore.dx*math.cos(theta)-sensore.dy*math.sin(theta)
+    y_sensore = sensore.dx*math.sin(theta)+sensore.dy*math.cos(theta)
+    x_coor = x_sensore+dist*math.cos(theta+sensore.offset)
+    y_coor = y_sensore+dist*math.sin(theta+sensore.offset)
     if not(int(x_coor) >= MAX_MAP or int(x_coor) < 0 or int(y_coor) >= MAX_MAP or int(y_coor) < 0):
         grid[int(x_coor)][int(y_coor)] = 1
     #imposto le caselle tra la mia posizione e il rilevamento a 0 (vuoto)
-    dx, dy = math.cos(theta+angolo_sensore), math.sin(theta+angolo_sensore)
+    dx, dy = math.cos(theta+sensore.offset), math.sin(theta+sensore.offset)
     cx, cy = dx, dy
     for i in range(dist):
-        grid[int(robot[0] + cx)][robot[1] + cy] = 0
+        grid[int(x_sensore + cx)][y_sensore + cy] = 0
         cx, cy = cx+dx, cy+dy
 
 def elabora_velocita(theta, t):
@@ -110,7 +112,8 @@ theta = math.pi/2;
 
 while True:
     start_time = time.time()
-    elabora_sensore(theta, 0)
+    for s in sensori_distanza:
+        elabora_sensore(theta, s)
     elapsed = time.time() - start_time
     elabora_velocita(theta, elapsed)
 
