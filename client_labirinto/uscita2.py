@@ -106,7 +106,7 @@ def elabora_velocita(theta, t):
 
 grid viene inizializzato come non esplorato
 '''
-grid = [[int(2) for x in xrange(401)] for y in xrange(401)]
+grid = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
 
 theta = math.pi/2;
 
