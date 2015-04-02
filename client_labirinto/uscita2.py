@@ -9,6 +9,11 @@ import sys
 import time
 
 '''
+MAX_MAP e' la grandezza della mappa
+'''
+MAX_MAP = 400
+
+'''
 robot[0] = x
 robot[1] = y
 '''
@@ -62,7 +67,7 @@ def elabora_sensore(theta, angolo_sensore):
     dist = float(mov.sense(0))
     x_coor = robot[0]+dist*math.cos(theta+angolo_sensore)
     y_coor = robot[1]+dist*math.sin(theta+angolo_sensore)
-    if not(int(x_coor) >= 400 or int(x_coor) < 0 or int(y_coor) >= 400 or int(y_coor) < 0):
+    if not(int(x_coor) >= MAX_MAP or int(x_coor) < 0 or int(y_coor) >= MAX_MAP or int(y_coor) < 0):
         grid[int(x_coor)][int(y_coor)] = 1
     #imposto le caselle tra la mia posizione e il rilevamento a 0 (vuoto)
     dx, dy = math.cos(theta+angolo_sensore), math.sin(theta+angolo_sensore)
