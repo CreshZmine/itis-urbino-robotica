@@ -4,4 +4,4 @@ class Sensore():
         self.mov = mov #RoboSerial
 
     def leggi(self):
-        self.mov.requestSensor(self.id)
+        return self.mov.requestSensor(self.id)
