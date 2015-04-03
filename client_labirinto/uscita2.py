@@ -17,7 +17,7 @@ MAX_MAP = 400
 robot[0] = x
 robot[1] = y
 '''
-robot = [200, 200]
+robot = [MAX_MAP/2, MAX_MAP/2]
 
 robo_dx = 0
 robo_dy = 1
