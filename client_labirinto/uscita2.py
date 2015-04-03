@@ -117,39 +117,3 @@ while True:
     elapsed = time.time() - start_time
     elabora_velocita(theta, elapsed)
 
-def nodi():
-    d = 4.0
-    for x,y in nodi_grafo:
-            glBegin(GL_LINE_STRIP)
-            glColor3f(255,0,0)
-            glVertex2f(x-d, y-d)
-            glVertex2f(x-d, y+d)
-            glVertex2f(x+d, y+d)
-            glVertex2f(x+d, y-d)
-            glVertex2f(x-d, y-d)
-            glEnd()
-
-
-def quadro():
-    d = 4.0
-    for x in range(401):
-        for y in range(401):
-            if grid[x][y] == True:
-                glBegin(GL_LINE_STRIP)
-                glColor3f(255,255,255)
-                glVertex2f(x-d, y-d)
-                glVertex2f(x-d, y+d)
-                glVertex2f(x+d, y+d)
-                glVertex2f(x+d, y-d)
-                glVertex2f(x-d, y-d)
-                glEnd()
-
-win = pyglet.window.Window()
-
-@win.event
-def on_draw():
-    glClear(GL_COLOR_BUFFER_BIT)
-    quadro()
-    #nodi()
-
-pyglet.app.run()
