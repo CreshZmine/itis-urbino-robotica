@@ -88,14 +88,13 @@ def elabora_sensore(theta, sensore):
         grid[int(x_sensore + cx)][y_sensore + cy] = 0
         cx, cy = cx+dx, cy+dy
 
-def elabora_velocita(theta, t):
-    vel_dritto = float(mov.sense(1)) #Cambiare 1 con il sensore di velocita
-    vel = []
-    vel.append(vel_dritto*math.cos(theta))
-    vel.append(vel_dritto*math.sin(theta))
-    dx, dy = map(lambda (x): x*t, vel)
-    robot[0] += dx
-    robot[1] += dy
+def elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velocita):
+    '''
+    Aggiorna la posizione del robot tenendo conto della velocita
+    '''
+    delta_distanza = distanza_corrente - distanza_precedente
+    robot[0] += delta_distanza*math.cos(theta)
+    robot[1] += delta_distanza*math.sin(theta)
 
 #moves = movimenti.Robo_moves()
 
@@ -110,10 +109,11 @@ grid = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
 
 theta = math.pi/2;
 
+distanza_precedente = 0
+
 while True:
-    start_time = time.time()
     for s in sensori_distanza:
         elabora_sensore(theta, s)
-    elapsed = time.time() - start_time
-    elabora_velocita(theta, elapsed)
-
+    distanza_corrente = sensore_distanza_p.leggi()
+    elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velocita)
+    distanza_precedente = distanza_corrente
