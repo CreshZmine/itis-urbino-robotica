@@ -1,6 +1,6 @@
 ﻿== PROPOSTA PROTOCOLLO DI COMUNICAZIONE ==
 == TIVA - RASPBERRY PI ==
-rev. 1D (by Andrea Crescentini e Prof Zandri)
+rev. 1D (-)
 
 =====================
 Collegamento fisico:
@@ -48,7 +48,7 @@ G		|  Gradi
 D 		|  ID sensore
 
 ==========================
-MESSAGGI DEL TIVA: (4byte)
+MESSAGGI DEL TIVA: (5byte)
 ==========================
 (fornitura di informazioni richieste e non richieste)
 
