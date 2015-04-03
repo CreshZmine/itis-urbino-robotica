@@ -56,19 +56,6 @@ sensore_temperatura.angolo = 0
 sensore_velocita = sensore.Sensore(9, mov)
 sensore_distanza_p = sensore.Sensore(10, mov) #Distanza percorsa
 
-def checkValidita(coor):
-    if grid[coor[0]][coor[1]] == 1:
-        return False
-    return True
-
-def tp(x,y):
-    return math.sqrt(x*x+y*y)
-
-def distanza((x0,y0),(x1,y1)):
-    dx =x1-x0
-    dy =y1-y0
-    return tp(dx,dy)
-
 def elabora_sensore(theta, sensore):
     '''
     theta e' l'angolo del robot rispetto al punto iniziale
