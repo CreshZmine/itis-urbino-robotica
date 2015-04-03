@@ -75,8 +75,8 @@ def elabora_sensore(theta, sensore):
     sensore e' il sensore da analizzare
     '''
     dist = sensore.leggi()
-    x_sensore = sensore.dx*math.cos(theta)-sensore.dy*math.sin(theta)
-    y_sensore = sensore.dx*math.sin(theta)+sensore.dy*math.cos(theta)
+    x_sensore = robot[0]+sensore.dx*math.cos(theta)-sensore.dy*math.sin(theta)
+    y_sensore = robot[1]+sensore.dx*math.sin(theta)+sensore.dy*math.cos(theta)
     x_coor = x_sensore+dist*math.cos(theta+sensore.offset)
     y_coor = y_sensore+dist*math.sin(theta+sensore.offset)
     if not(int(x_coor) >= MAX_MAP or int(x_coor) < 0 or int(y_coor) >= MAX_MAP or int(y_coor) < 0):
