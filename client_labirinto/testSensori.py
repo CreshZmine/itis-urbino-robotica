@@ -7,7 +7,7 @@ robo.openConnection()
 
 
 while True:
-    print "--> "
+    print ("--> "),
     input = raw_input()
     try:
         print robo.requestSensor(int(input))
