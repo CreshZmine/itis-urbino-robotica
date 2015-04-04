@@ -94,9 +94,9 @@ grid viene inizializzato come non esplorato
 '''
 grid = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
 
-theta = math.pi/2;
+theta = sensore_angolo.leggi()*math.pi/180;
 
-distanza_precedente = 0
+distanza_precedente = sensore_distanza_p.leggi();
 
 while True:
     for s in sensori_distanza:
