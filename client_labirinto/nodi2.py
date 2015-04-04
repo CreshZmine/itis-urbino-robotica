@@ -4,7 +4,7 @@ class Grafo:
     def __init__(self):
         self.graph = {}
 
-    def inserisci_nodo(self, nodo, vicino, costo):
+    def inserisci(self, nodo, vicino, costo):
         if not nodo in self.graph:
             self.graph[nodo] = {}
         self.graph[nodo][vicino] = costo
@@ -21,6 +21,6 @@ class Grafo:
                 percorso = percorso + [v]
                 visitati.add(v)
                 if v == fine:
-                    return costo, percorso
+                    return percorso, costo
                 for (prossimo, c) in self.graph[v].iteritems():
                     heapq.heappush(coda, (costo+c, prossimo, percorso))
