@@ -13,11 +13,11 @@ class GrafoCartesiano:
     def __min(self, x, y):
         return x if self.dist[x] < self.dist[y] else y
 
-    def __vicini(self, muri, pos):
+    def __vicini(self, muri, pos, grafo):
         vicini = []
         for x in range(pos[0]-1, pos[0]+2):
             for y in range(pos[1]-1, pos[1]+2):
-                if not self.__muro_presente(muri, pos, (x,y)) and pos != (x,y):
+                if not self.__muro_presente(muri, pos, (x,y)) and pos != (x,y) and grafo[x][y] != 0:
                     vicini.append((x,y))
         return vicini
 
@@ -31,7 +31,7 @@ class GrafoCartesiano:
             return 1
         return 1.41
 
-    def risolvi(self, muri, pos_in, pos_out, graph_dimension_x, graph_dimension_y):
+    def risolvi(self, muri, pos_in, pos_out, graph_dimension_x, graph_dimension_y, grafo):
         for x in range(graph_dimension_x):
             for y in range(graph_dimension_y):
                 self.dist[(x,y)] = INFINITY
@@ -46,7 +46,7 @@ class GrafoCartesiano:
 
             self.unvisited.remove(u)
 
-            for v in self.__vicini(muri, u):
+            for v in self.__vicini(muri, u, grafo):
                 if v in self.unvisited:
                     alt = self.dist[u] + self.__length(v, u)
                     if alt < dist[v]:
