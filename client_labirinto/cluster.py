@@ -37,34 +37,34 @@ def find_centers(found):
         cluster = copy.deepcopy(cluster_orig)
         lim = 4
         while lim > 1:
-            while not minimizzato(cluster, lim):
-                cluster = riduci(cluster, lim)
+            while not _minimizzato(cluster, lim):
+                cluster = _riduci(cluster, lim)
             lim -= 1
-        res.append(trovaMaggiore(cluster))
+        res.append(_trovaMaggiore(cluster))
     return res
 
-def riduci(cluster, min):
+def _riduci(cluster, min):
     cl_final = copy.deepcopy(cluster)
     for point in cluster:
-        if conta_vicini(cluster, cluster.index(point)) < min:
+        if _conta_vicini(cluster, cluster.index(point)) < min:
             cl_final.remove(point)
     return cl_final
 
-def minimizzato(cluster, min):
+def _minimizzato(cluster, min):
     for point in cluster:
-        if conta_vicini(cluster, cluster.index(point)) == min:
+        if _conta_vicini(cluster, cluster.index(point)) == min:
             return False
     return True
 
-def trovaMaggiore(cluster):
-    return reduce(lambda x, y: maggiore_vicini(cluster, x, y), cluster)
+def _trovaMaggiore(cluster):
+    return reduce(lambda x, y: _maggiore_vicini(cluster, x, y), cluster)
 
-def maggiore_vicini(cluster, a, b):
-    if conta_vicini(cluster, cluster.index(a)) >= conta_vicini(cluster, cluster.index(b)):
+def _maggiore_vicini(cluster, a, b):
+    if _conta_vicini(cluster, cluster.index(a)) >= _conta_vicini(cluster, cluster.index(b)):
         return a
     return b
 
-def conta_vicini(cluster, punto_index):
+def _conta_vicini(cluster, punto_index):
     tot = 0
     i = 0
     cl = copy.deepcopy(cluster)
