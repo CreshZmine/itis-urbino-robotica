@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from pyglet.gl import *
+import grafo_cartesiano
 import math
 import pyglet
 import random
@@ -88,7 +89,8 @@ def elabora_sensore(theta, sensore):
             seconda_casella = (prima_casella[0], prima_casella[1] + (1 if (y_coor % 1) > 0.5 else -1))
         else:
             seconda_casella = (prima_casella[0] + (1 if (x_coor % 1) > 0.5 else -1), prima_casella[1])
-        muri += (prima_casella, seconda_casella)
+        if not (prima_casella, seconda_casella) in muri and not (seconda_casella, prima_casella) in muri:
+            muri.append((prima_casella, seconda_casella))
         #imposto le caselle tra la mia posizione e il rilevamento a 0 (vuoto)
         dx, dy = math.cos(theta+sensore.offset), math.sin(theta+sensore.offset)
         cx, cy = dx, dy
@@ -128,6 +130,25 @@ def elabora_giroscopio():
                 rampa_tile2 = rampa_tile_t
     else:
         t.stop()
+
+def torna_inizio():
+    g = grafo_cartesiano.GrafoCartesiano()
+    if grid is grid2:   #Siamo nel piano sbagliato
+        route = g.risolvi(muri, (robot[0], robot[1]), rampa_tile2, MAX_MAP, MAX_MAP, grid)
+    else:               #Siamo nel piano giusto
+        route = g.risolvi(muri, (robot[0], robot[1]), (200,200), MAX_MAP, MAX_MAP, grid)
+    followRoute(route)
+
+def followRoute(route):
+    for nodo in route:
+        vai_a_nodo(nodo)
+
+def vai_a_nodo(nodo):
+    angle_between = math.atan2(nodo[1] - robot[1], nodo[0] - robot[0]) - theta
+    mov.goGrad(angle_between*180/math.pi)
+    while math.sqrt((nodo[0]-robot[0])**2+(nodo[1]-robot[1])**2) > 1:
+        mov.goForward()
+
 
 #moves = movimenti.Robo_moves()
 
