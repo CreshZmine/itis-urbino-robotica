@@ -99,6 +99,13 @@ def elabora_sensore(theta, sensore):
                 pass
             cx, cy = cx+dx, cy+dy
 
+def elabora_sensore_colore():
+    if sensore_luminosita.leggi() == 255:
+        grid[int(robot[0])][int(robot[1])] = 0
+
+def elabora_posizione():
+    grid[int(robot[0])][int(robot[1])] = 1
+
 def elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velocita):
     '''
     Aggiorna la posizione del robot tenendo conto della velocita
@@ -169,6 +176,8 @@ distanza_precedente = sensore_distanza_p.leggi();
 while True:
     for s in sensori_distanza:
         elabora_sensore(theta, s)
+    elabora_sensore_colore()
+    elabora_posizione()
     distanza_corrente = sensore_distanza_p.leggi()
     elabora_giroscopio()
     elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velocita)
