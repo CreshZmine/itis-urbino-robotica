@@ -110,10 +110,19 @@ def elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velo
 def elabora_giroscopio():
     incl = sensore_giroscopio.leggi()
     if math.fabs(incl) > RAMP_TOLL:
+        if not t.running:
+            rampa_tile_t = (robot[0],robot[1])
         t.start()
         if t.read() > RAMP_SECONDS: #Ci siamo mossi su un'altra griglia
             t.stop()
-            grid = grid1 if grid is grid2 else grid2
+            if grid is grid1:
+                grid = grid2
+                rampa_tile1 = rampa_tile_t
+                rampa_tile2 = (robot[0], robot[1])
+            else:
+                grid = grid1
+                rampa_tile1 = (robot[0], robot[1])
+                rampa_tile2 = rampa_tile_t
     else:
         t.stop()
 
@@ -130,6 +139,14 @@ Una cella di grid è di 30 cm
 grid1 = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
 grid2 = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
 grid = grid1
+
+'''
+rampa_tile1 e' il tile in cui c'è la rampa nel grid1
+rampa_tile2 e' il tile in cui c'è la rampa nel grid2
+'''
+rampa_tile1 = (None, None)
+rampa_tile2 = (None, None)
+rampa_tile_t = (None, None)
 
 '''
 [((1,1),(1,2)),((3,2),(2,2))]
