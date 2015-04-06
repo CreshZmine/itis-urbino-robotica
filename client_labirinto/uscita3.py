@@ -117,10 +117,12 @@ def elabora_giroscopio():
             t.stop()
             if grid is grid1:
                 grid = grid2
+                muri = muri2
                 rampa_tile1 = rampa_tile_t
                 rampa_tile2 = (robot[0], robot[1])
             else:
                 grid = grid1
+                muri = muri1
                 rampa_tile1 = (robot[0], robot[1])
                 rampa_tile2 = rampa_tile_t
     else:
@@ -154,7 +156,9 @@ rampa_tile_t = (None, None)
     |     |
     -------
 '''
-muri = []
+muri1 = []
+muri2 = []
+muri = muri1
 
 theta = sensore_angolo.leggi()*math.pi/180;
 
