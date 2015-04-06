@@ -7,11 +7,20 @@ import RoboSerial
 import sensore
 import sys
 import time
+import timer
 
 '''
 MAX_MAP e' la grandezza della mappa
 '''
 MAX_MAP = 400
+
+'''
+RAMP_SECONDS sono i secondi per cui deve salire
+o scendere il robot per considerare quel tratto come rampa
+RAMP_TOLL e' il grado dopo il quale il tratto viene considerato in pendenza
+'''
+RAMP_SECONDS = 2
+RAMP_TOLL = 2
 
 '''
 Una "casella" e' di 0.033 (1/30) cm
@@ -25,6 +34,7 @@ robot = [MAX_MAP/2, MAX_MAP/2]
 
 mov = RoboSerial.RoboSerial()
 mov.openConnection()
+t = timer.Timer()
 
 sensori_distanza = []
 sensori_distanza.append(sensore.Sensore(1, mov))    #Sensore davanti
@@ -55,6 +65,8 @@ sensore_temperatura = sensore.Sensore(8, mov)
 
 sensore_velocita = sensore.Sensore(9, mov)
 sensore_distanza_p = sensore.Sensore(10, mov) #Distanza percorsa
+
+sensore_giroscopio = sensore.Sensore(11, mov)
 
 def elabora_sensore(theta, sensore):
     '''
@@ -95,6 +107,26 @@ def elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velo
     robot[0] += delta_distanza*math.cos(theta)
     robot[1] += delta_distanza*math.sin(theta)
 
+def elabora_giroscopio():
+    incl = sensore_giroscopio.leggi()
+    if math.fabs(incl) > RAMP_TOLL:
+        if not t.running:
+            rampa_tile_t = (robot[0],robot[1])
+        t.start()
+        if t.read() > RAMP_SECONDS: #Ci siamo mossi su un'altra griglia
+            t.stop()
+            if grid is grid1:
+                grid = grid2
+                muri = muri2
+                rampa_tile1 = rampa_tile_t
+                rampa_tile2 = (robot[0], robot[1])
+            else:
+                grid = grid1
+                muri = muri1
+                rampa_tile1 = (robot[0], robot[1])
+                rampa_tile2 = rampa_tile_t
+    else:
+        t.stop()
 
 #moves = movimenti.Robo_moves()
 
@@ -102,10 +134,21 @@ def elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velo
 1 - vuoto
 2 - non esplorato
 
-grid viene inizializzato come non esplorato
+grid1 e 2 vengono inizializzate come non esplorato
+grid e' la griglia corrente
 Una cella di grid è di 30 cm
 '''
-grid = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
+grid1 = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
+grid2 = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
+grid = grid1
+
+'''
+rampa_tile1 e' il tile in cui c'è la rampa nel grid1
+rampa_tile2 e' il tile in cui c'è la rampa nel grid2
+'''
+rampa_tile1 = (None, None)
+rampa_tile2 = (None, None)
+rampa_tile_t = (None, None)
 
 '''
 [((1,1),(1,2)),((3,2),(2,2))]
@@ -113,7 +156,9 @@ grid = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
     |     |
     -------
 '''
-muri = []
+muri1 = []
+muri2 = []
+muri = muri1
 
 theta = sensore_angolo.leggi()*math.pi/180;
 
@@ -123,5 +168,6 @@ while True:
     for s in sensori_distanza:
         elabora_sensore(theta, s)
     distanza_corrente = sensore_distanza_p.leggi()
+    elabora_giroscopio()
     elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velocita)
     distanza_precedente = distanza_corrente
