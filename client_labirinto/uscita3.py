@@ -141,42 +141,43 @@ def elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velo
 
 def elabora_giroscopio():
     sensori_lock.acquire()
-    incl = sensore_giroscopio.leggi()
+    incl, val = sensore_giroscopio.leggi()
     sensori_lock.release()
-    if math.fabs(incl) > RAMP_TOLL:
-        if not t.running:
-            robot_lock.acquire()
-            rampa_lock.acquire()
-            rampa_tile_t = (robot[0],robot[1])
-            rampa_lock.release()
-            robot_lock.release()
-        t.start()
-        if t.read() > RAMP_SECONDS: #Ci siamo mossi su un'altra griglia
+    if val:
+        if math.fabs(incl) > RAMP_TOLL:
+            if not t.running:
+                robot_lock.acquire()
+                rampa_lock.acquire()
+                rampa_tile_t = (robot[0],robot[1])
+                rampa_lock.release()
+                robot_lock.release()
+            t.start()
+            if t.read() > RAMP_SECONDS: #Ci siamo mossi su un'altra griglia
+                t.stop()
+                grid_lock.acquire()
+                muri_lock.acquire()
+                if grid is grid1:
+                    grid = grid2
+                    muri = muri2
+                    rampa_lock.acquire()
+                    rampa_tile1 = rampa_tile_t
+                    robot_lock.acquire()
+                    rampa_tile2 = (robot[0], robot[1])
+                    rampa_lock.release()
+                    robot_lock.release()
+                else:
+                    grid = grid1
+                    muri = muri1
+                    robot_lock.acquire()
+                    rampa_lock.acquire()
+                    rampa_tile1 = (robot[0], robot[1])
+                    robot_lock.release()
+                    rampa_tile2 = rampa_tile_t
+                    rampa_lock.release()
+                muri_lock.release()
+                grid_lock.release()
+        else:
             t.stop()
-            grid_lock.acquire()
-            muri_lock.acquire()
-            if grid is grid1:
-                grid = grid2
-                muri = muri2
-                rampa_lock.acquire()
-                rampa_tile1 = rampa_tile_t
-                robot_lock.acquire()
-                rampa_tile2 = (robot[0], robot[1])
-                rampa_lock.release()
-                robot_lock.release()
-            else:
-                grid = grid1
-                muri = muri1
-                robot_lock.acquire()
-                rampa_lock.acquire()
-                rampa_tile1 = (robot[0], robot[1])
-                robot_lock.release()
-                rampa_tile2 = rampa_tile_t
-                rampa_lock.release()
-            muri_lock.release()
-            grid_lock.release()
-    else:
-        t.stop()
 
 def torna_inizio():
     g = grafo_cartesiano.GrafoCartesiano()
