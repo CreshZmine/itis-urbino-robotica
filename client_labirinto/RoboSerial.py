@@ -178,11 +178,15 @@ class RoboSerial:
 			self.sendCommand("F","0")
 
 			if(self.receive()):
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,True
+				if(self.lastReceive[2] == "1"):
+					return True,True
+				else:
+					return False,True
 			else:
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,False
+				if(self.lastReceive[2] == "1"):
+					return True,False
+				else:
+					return False,False
 
 	def goBack(self):
 		# Invia un comando di spostamento indietro
@@ -190,11 +194,15 @@ class RoboSerial:
 			self.sendCommand("B","0")
 
 			if(self.receive()):
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,True
+				if(self.lastReceive[2] == "1"):
+					return True,True
+				else:
+					return False,True
 			else:
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,False
+				if(self.lastReceive[2] == "1"):
+					return True,False
+				else:
+					return False,False
 
 	def goBackGrad(self):
 		# Invia un comando di rotazione di 180 gradi
@@ -202,11 +210,15 @@ class RoboSerial:
 			self.sendCommand("I","0")
 
 			if(self.receive()):
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,True
+				if(self.lastReceive[2] == "1"):
+					return True,True
+				else:
+					return False,True
 			else:
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,False
+				if(self.lastReceive[2] == "1"):
+					return True,False
+				else:
+					return False,False
 
 	def goRight(self):
 		# Invia un comando di spostamento a destra
@@ -230,11 +242,15 @@ class RoboSerial:
 			self.sendCommand("L","0")
 
 			if(self.receive()):
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,True
+				if(self.lastReceive[2] == "1"):
+					return True,True
+				else:
+					return False,True
 			else:
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,False
+				if(self.lastReceive[2] == "1"):
+					return True,False
+				else:
+					return False,False
 
 	def goStop(self):
 		# Invia un comando di stop
@@ -242,11 +258,15 @@ class RoboSerial:
 			self.sendCommand("S","0")
 
 			if(self.receive()):
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,True
+				if(self.lastReceive[2] == "1"):
+					return True,True
+				else:
+					return False,True
 			else:
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,False
+				if(self.lastReceive[2] == "1"):
+					return True,False
+				else:
+					return False,False
 
 	def goGrad(self,grad):
 		# Invia un comando di rotazione in gradi
@@ -254,11 +274,15 @@ class RoboSerial:
 			self.sendCommand("G",str(grad))
 
 			if(self.receive()):
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,True
+				if(self.lastReceive[2] == "1"):
+					return True,True
+				else:
+					return False,True
 			else:
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,False
+				if(self.lastReceive[2] == "1"):
+					return True,False
+				else:
+					return False,False
 
 	def requestSensor(self, idSens):
 		# Richiede lo stato di un sensore
