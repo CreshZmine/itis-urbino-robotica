@@ -332,6 +332,7 @@ while True:
     sensori_lock.acquire()
     elabora_sensore_colore()
     elabora_posizione()
+    theta = sensore_angolo.leggi()*math.pi/180
     distanza_corrente = sensore_distanza_p.leggi()
     sensori_lock.release()
     elabora_giroscopio()
