@@ -241,17 +241,19 @@ def take_control():
     pianifica(centers1, centers2)
 
 def routine_movimento():
+    muovi = True
     sensori_lock.acquire()
     dist_a, val = sensori_distanza[0].lettura
-    if val:
-        if dist_a < 3/30.0: #Se c'e' un muro piu' vicino di 3 cm
-            dist_d, val_d = sensori_distanza[1].lettura
-            dist_s, val_s = sensori_distanza[2].lettura
-            if val_s and val_d:
-                if dist_d < dist_s: #Se siamo nell'angolo alto-destra
-                    mov.goLeft()
-                else: #Se siamo nell'angolo alto-destra
-                    mov.goRight()
+    dist_d, val_d = sensori_distanza[1].lettura
+    if val_d:
+        if dist_d > 1: #Manca il muro a destra
+            mov.goRight()
+            muovi = False
+        elif val:
+            if dist_a < 3/30.0: #Se c'e' un muro piu' vicino di 3 cm
+                mov.goLeft()
+                muovi = False
+    if muovi:
         mov.goForward()
     sensori_lock.release()
 
