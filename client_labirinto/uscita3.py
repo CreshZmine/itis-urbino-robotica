@@ -270,6 +270,18 @@ def loop_routine_movimento():
     grid_lock.release()
     take_control()
 
+def rileva_vittima():
+    temp, val = sensore_temperatura.leggi()
+    dist, val1 = sensori[0].lettura, sensori[0].valido
+    if val and val1 and temp >= 28 and dist < 15.0:
+        return True
+    return False
+
+def sgancia():
+    sensori_lock.acquire()
+    mov.goBackGrad()
+    sensori_lock.release()
+    mov.leaveRescuePack()
 
 #moves = movimenti.Robo_moves()
 
