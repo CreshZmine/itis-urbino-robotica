@@ -1,11 +1,11 @@
 #!/usr/bin/python
 from pyglet.gl import *
+import RoboSerial
 import cluster
 import grafo_cartesiano
 import math
 import pyglet
 import random
-import RoboSerial
 import sensore
 import sys
 import thread
