@@ -292,7 +292,7 @@ def sgancia():
 
 grid1 e 2 vengono inizializzate come non esplorato
 grid e' la griglia corrente
-Una cella di grid è di 30 cm
+Una cella di grid e' di 30 cm
 '''
 grid_lock = thread.allocate_lock()
 grid1 = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
