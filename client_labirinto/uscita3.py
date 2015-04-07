@@ -79,43 +79,45 @@ def elabora_sensore(theta, sensore):
     sensore e' il sensore da analizzare
     '''
     sensori_lock.acquire()
-    dist = sensore.leggi()
+    dist, val = sensore.leggi()
     sensori_lock.release()
-    dist /= 30.0 #Lo porto nella unita di misura "casella"
-    robot_lock.acquire()
-    x_sensore = robot[0]+sensore.dx*math.cos(theta)-sensore.dy*math.sin(theta)
-    y_sensore = robot[1]+sensore.dx*math.sin(theta)+sensore.dy*math.cos(theta)
-    robot_lock.release()
-    x_coor = x_sensore+dist*math.cos(theta+sensore.offset)
-    y_coor = y_sensore+dist*math.sin(theta+sensore.offset)
+    if val:
+        dist /= 30.0 #Lo porto nella unita di misura "casella"
+        robot_lock.acquire()
+        x_sensore = robot[0]+sensore.dx*math.cos(theta)-sensore.dy*math.sin(theta)
+        y_sensore = robot[1]+sensore.dx*math.sin(theta)+sensore.dy*math.cos(theta)
+        robot_lock.release()
+        x_coor = x_sensore+dist*math.cos(theta+sensore.offset)
+        y_coor = y_sensore+dist*math.sin(theta+sensore.offset)
 
-    x_coor_approx = int(math.ceil(x_coor)) if (x_coor % 1) > 0.5 else int(math.floor(x_coor))
-    y_coor_approx = int(math.ceil(y_coor)) if (y_coor % 1) > 0.5 else int(math.floor(y_coor))
-    prima_casella = (math.trunc(x_coor), math.trunc(y_coor))
-    if math.sqrt((x_coor_approx-x_coor)**2+(y_coor_approx-y_coor)**2) > 1/15.0: #Spigolo di 2 centimetri?
-        if maht.fabs(y_coor_approx - y_coor) < maht.fabs(x_coor_approx - x_coor):
-            seconda_casella = (prima_casella[0], prima_casella[1] + (1 if (y_coor % 1) > 0.5 else -1))
-        else:
-            seconda_casella = (prima_casella[0] + (1 if (x_coor % 1) > 0.5 else -1), prima_casella[1])
-        muri_lock.acquire()
-        if not (prima_casella, seconda_casella) in muri and not (seconda_casella, prima_casella) in muri:
-            muri.append((prima_casella, seconda_casella))
-        muri_lock.release()
-        #imposto le caselle tra la mia posizione e il rilevamento a 0 (vuoto)
-        dx, dy = math.cos(theta+sensore.offset), math.sin(theta+sensore.offset)
-        cx, cy = dx, dy
-        for i in range(dist):
-            grid_lock.acquire()
-            try:
-                grid[int(x_sensore + cx)][int(y_sensore + cy)] = 1
-            except IndexError:
-                pass
-            grid_lock.release()
-            cx, cy = cx+dx, cy+dy
+        x_coor_approx = int(math.ceil(x_coor)) if (x_coor % 1) > 0.5 else int(math.floor(x_coor))
+        y_coor_approx = int(math.ceil(y_coor)) if (y_coor % 1) > 0.5 else int(math.floor(y_coor))
+        prima_casella = (math.trunc(x_coor), math.trunc(y_coor))
+        if math.sqrt((x_coor_approx-x_coor)**2+(y_coor_approx-y_coor)**2) > 1/15.0: #Spigolo di 2 centimetri?
+            if maht.fabs(y_coor_approx - y_coor) < maht.fabs(x_coor_approx - x_coor):
+                seconda_casella = (prima_casella[0], prima_casella[1] + (1 if (y_coor % 1) > 0.5 else -1))
+            else:
+                seconda_casella = (prima_casella[0] + (1 if (x_coor % 1) > 0.5 else -1), prima_casella[1])
+            muri_lock.acquire()
+            if not (prima_casella, seconda_casella) in muri and not (seconda_casella, prima_casella) in muri:
+                muri.append((prima_casella, seconda_casella))
+            muri_lock.release()
+            #imposto le caselle tra la mia posizione e il rilevamento a 0 (vuoto)
+            dx, dy = math.cos(theta+sensore.offset), math.sin(theta+sensore.offset)
+            cx, cy = dx, dy
+            for i in range(dist):
+                grid_lock.acquire()
+                try:
+                    grid[int(x_sensore + cx)][int(y_sensore + cy)] = 1
+                except IndexError:
+                    pass
+                grid_lock.release()
+                cx, cy = cx+dx, cy+dy
 
 def elabora_sensore_colore():
     sensori_lock.acquire()
-    if sensore_luminosita.leggi() == 255:
+    col, val = sensore_luminosita.leggi()
+    if col == 255 and col == True:
         grid_lock.acquire()
         grid[int(robot[0])][int(robot[1])] = 0
         grid_lock.release()
