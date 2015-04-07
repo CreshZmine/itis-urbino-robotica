@@ -297,3 +297,19 @@ class RoboSerial:
 			else:
 				ret=(ord(self.lastReceive[1])*(2**8))+(ord(self.lastReceive[2]))
 				return ret,False
+
+	def leaveRescuePack(self):
+		# Invia un comando di stop
+		if(self.isConnected()):
+			self.sendCommand("P","0")
+
+			if(self.receive()):
+				if(self.lastReceive[2] == "1"):
+					return True,True
+				else:
+					return False,True
+			else:
+				if(self.lastReceive[2] == "1"):
+					return True,False
+				else:
+					return False,False
