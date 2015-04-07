@@ -275,7 +275,9 @@ def loop_routine_movimento():
 def rileva_vittima():
     temp, val = sensore_temperatura.leggi()
     dist, val1 = sensori[0].lettura, sensori[0].valido
-    if val and val1 and temp >= 28 and dist < 15.0:
+    dist2, val2 = sensori[1].lettura, sensori[1].valido
+    dist3, val3 = sensori[3].lettura, sensori[3].valido
+    if val and val1 and val2 and val3 and temp >= 28 and dist < 15.0 and dist2 < 15.0 and dist3 < 15.0:
         return True
     return False
 
@@ -284,6 +286,7 @@ def sgancia():
     mov.goBackGrad()
     sensori_lock.release()
     mov.leaveRescuePack()
+    mov.goBackGrad()
 
 #moves = movimenti.Robo_moves()
 
