@@ -292,8 +292,8 @@ class RoboSerial:
 			self.sendCommand("D",chr(idSens))
 
 			if(self.receive()):
-				ret=(self.lastReceive[1]*(2**8))+(self.lastReceive[2])
+				ret=(ord(self.lastReceive[1])*(2**8))+(ord(self.lastReceive[2]))
 				return ret,True
 			else:
-				ret=(self.lastReceive[1]*(2**8))+(self.lastReceive[2])
+				ret=(ord(self.lastReceive[1])*(2**8))+(ord(self.lastReceive[2]))
 				return ret,False
