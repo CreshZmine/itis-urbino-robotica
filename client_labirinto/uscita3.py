@@ -105,8 +105,8 @@ def elabora_sensore(theta, sensore):
         dx, dy = math.cos(theta+sensore.offset), math.sin(theta+sensore.offset)
         cx, cy = dx, dy
         for i in range(dist):
+            grid_lock.acquire()
             try:
-                grid_lock.acquire()
                 grid[int(x_sensore + cx)][int(y_sensore + cy)] = 1
             except IndexError:
                 pass
@@ -114,11 +114,17 @@ def elabora_sensore(theta, sensore):
             cx, cy = cx+dx, cy+dy
 
 def elabora_sensore_colore():
+    sensori_lock.acquire()
     if sensore_luminosita.leggi() == 255:
+        grid_lock.acquire()
         grid[int(robot[0])][int(robot[1])] = 0
+        grid_lock.release()
+    sensori_lock.release()
 
 def elabora_posizione():
+    grid_lock.acquire()
     grid[int(robot[0])][int(robot[1])] = 1
+    grid_lock.release()
 
 def elabora_velocita(theta, distanza_precedente, distanza_corrente, sensore_velocita):
     '''
