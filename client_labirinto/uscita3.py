@@ -46,19 +46,19 @@ sensori_distanza.append(sensore.Sensore(1, mov))    #Sensore davanti
 sensori_distanza[-1].dx = 0
 sensori_distanza[-1].dy = 5/30.0
 sensori_distanza[-1].offset = 0
-sensori_distanza.append(sensore.Sensore(2, mov))    #Sensore destra-alto
+sensori_distanza.append(sensore.Sensore(5, mov))    #Sensore destra-alto
 sensori_distanza[-1].dx = 7.5/30.0
 sensori_distanza[-1].dy = 5/30.0
 sensori_distanza[-1].offset = -math.pi/2
-sensori_distanza.append(sensore.Sensore(3, mov))    #Sensore destra-basso
+sensori_distanza.append(sensore.Sensore(4, mov))    #Sensore destra-basso
 sensori_distanza[-1].dx = 7.5/30.0
 sensori_distanza[-1].dy = -5/30.0
 sensori_distanza[-1].offset = -math.pi/2
-sensori_distanza.append(sensore.Sensore(4, mov))    #Sensore sinistra-alto
+sensori_distanza.append(sensore.Sensore(2, mov))    #Sensore sinistra-alto
 sensori_distanza[-1].dx = -7.5/30.0
 sensori_distanza[-1].dy = 5/30.0
 sensori_distanza[-1].offset = math.pi/2
-sensori_distanza.append(sensore.Sensore(5, mov))    #Sensore sinistra-basso
+sensori_distanza.append(sensore.Sensore(3, mov))    #Sensore sinistra-basso
 sensori_distanza[-1].dx = -7.5/30.0
 sensori_distanza[-1].dy = -5/30.0
 sensori_distanza[-1].offset = math.pi/2
