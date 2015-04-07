@@ -32,6 +32,7 @@ class GrafoCartesiano:
         return 1.41
 
     def risolvi(self, muri, pos_in, pos_out, graph_dimension_x, graph_dimension_y, grafo):
+        self.unvisited = []
         for x in range(graph_dimension_x):
             for y in range(graph_dimension_y):
                 self.dist[(x,y)] = INFINITY
@@ -39,7 +40,7 @@ class GrafoCartesiano:
                 self.unvisited.append((x,y))
                 self.dist[pos_in] = 0
 
-        while len(unvisited) > 0:
+        while len(self.unvisited) > 0:
             u = reduce(lambda x, y: self.__min(x, y), self.unvisited)
             if u == pos_out
                 break
@@ -49,13 +50,13 @@ class GrafoCartesiano:
             for v in self.__vicini(muri, u, grafo):
                 if v in self.unvisited:
                     alt = self.dist[u] + self.__length(v, u)
-                    if alt < dist[v]:
-                        dist[v] = alt
-                        prev[v] = u
+                    if alt < self.dist[v]:
+                        self.dist[v] = alt
+                        self.prev[v] = u
 
         s = []
         u = pos_out
         while self.prev[u] != (None, None):
             s.insert(0, u)
             u = self.prev[u]
-        return s, dist[u]
+        return s, self.dist[u]
