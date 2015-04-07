@@ -214,11 +214,15 @@ class RoboSerial:
 			self.sendCommand("R","0")
 
 			if(self.receive()):
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,True
+				if(self.lastReceive[2] == "1"):
+					return True,True
+				else:
+					return False,True
 			else:
-				ret=self.lastReceive[1]+self.lastReceive[2]
-				return ret,False
+				if(self.lastReceive[2] == "1"):
+					return True,False
+				else:
+					return False,False
 
 	def goLeft(self):
 		# Invia un comando di spostamento a sinistra
