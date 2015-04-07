@@ -194,6 +194,21 @@ def torna_inizio():
     robot_lock.release()
     followRoute(route)
 
+def pianifica(centers1, centers2):
+    #start - cluster1 - rampa_tile1 - rampa_tile2 - cluster2 - inizio
+    g = grafo_cartesiano.GrafoCartesiano()
+    piano = centers1
+    piano += rampa_tile1
+    piano += rampa_tile2
+    piano += clusters2
+    piano += [(200,200)]
+    route = []
+    for obb in piano:
+        muri_lock.acquire()
+        route += g.risolvi(muri, (200, 200), obb, MAX_MAP, MAX_MAP, grid)
+        muri_lock.release()
+    followRoute(route)
+
 def followRoute(route):
     for nodo in route:
         vai_a_nodo(nodo)
@@ -223,6 +238,37 @@ def take_control():
             cl2.append(l)
     centers1 = cluster.find_centers(cl1)
     centers2 = cluster.find_centers(cl2)
+    pianifica(centers1, centers2)
+
+def routine_movimento():
+    sensori_lock.acquire()
+    dist_a, val = sensori_distanza[0].lettura
+    if val:
+        if dist_a < 3/30.0: #Se c'e' un muro piu' vicino di 3 cm
+            dist_d, val_d = sensori_distanza[1].lettura
+            dist_s, val_s = sensori_distanza[2].lettura
+            if val_s and val_d:
+                if dist_d < dist_s: #Se siamo nell'angolo alto-destra
+                    mov.goLeft()
+                else: #Se siamo nell'angolo alto-destra
+                    mov.goRight()
+        mov.goForward()
+    sensori_lock.release()
+
+def loop_routine_movimento():
+    robot_lock.acquire()
+    grid_lock.acquire()
+    while not (robot[0] == 200 and robot[1] == 200 and grid is grid1):
+        grid_lock.release()
+        robot_lock.release()
+        routine_movimento()
+        if rileva_vittima():
+            sgancia()
+        robot_lock.acquire()
+        grid_lock.acquire()
+    robot_lock.release()
+    grid_lock.release()
+    take_control()
 
 
 #moves = movimenti.Robo_moves()
@@ -242,13 +288,14 @@ grid2 = [[int(2) for x in xrange(MAX_MAP+1)] for y in xrange(MAX_MAP+1)]
 grid = grid1
 
 '''
-rampa_tile1 e' il tile in cui c'è la rampa nel grid1
-rampa_tile2 e' il tile in cui c'è la rampa nel grid2
+rampa_tile1 e' il tile in cui c'e' la rampa nel grid1
+rampa_tile2 e' il tile in cui c'e' la rampa nel grid2
 '''
 rampa_lock = thread.allocate_lock()
 rampa_tile1 = (None, None)
 rampa_tile2 = (None, None)
 rampa_tile_t = (None, None)
+routine = True
 
 '''
 [((1,1),(1,2)),((3,2),(2,2))]
@@ -265,6 +312,7 @@ theta_lock = thread.allocate_lock()
 theta = sensore_angolo.leggi()*math.pi/180;
 
 distanza_precedente = sensore_distanza_p.leggi();
+loop_movimento_t = thread.start_new_thread(loop_routine_movimento)
 
 while True:
     for s in sensori_distanza:
@@ -279,7 +327,5 @@ while True:
     distanza_precedente = distanza_corrente
     robot_lock.acquire()
     grid_lock.acquire()
-    if robot[0] == 200 and robot[1] == 200 and grid is grid1: #Siamo tornati indietro
-        thread.start_new_thread(take_control)
     robot_lock.release()
     grid_lock.release()
