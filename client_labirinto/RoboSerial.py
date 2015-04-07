@@ -101,10 +101,10 @@ class RoboSerial:
 			self.receiveBuffer+=read														# Salva il messaggio ricevuto nel buffer
 			read=read.replace(self.charTerminator," ") 										# Rimuove il carattere terminatore della comunicazione
 			self.lastReceive = read 														# La salvo come ultima stringa ricevuta
-			cksum = self.genChecksum16(read[lenRead-4], read[lenRead-3], read[lenRead-2])	# Genero il checksum per la verifica dell'integrita' del messaggio
+			cksum = self.genChecksum16(read[-5], read[-4], read[-3])						# Genero il checksum per la verifica dell'integrita' del messaggio
 
 			# Verifico se il checksum generato corrisponde con quello ricevuto
-			if (cksum == ord(read[lenRead-1])):
+			if (cksum == ord(read[-2])):
 				return True
 			else:
 				return False
