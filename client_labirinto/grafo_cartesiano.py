@@ -42,7 +42,7 @@ class GrafoCartesiano:
 
         while len(self.unvisited) > 0:
             u = reduce(lambda x, y: self.__min(x, y), self.unvisited)
-            if u == pos_out
+            if u == pos_out:
                 break
 
             self.unvisited.remove(u)
