@@ -9,6 +9,7 @@ import sys
 import thread
 import time
 import timer
+import cluster_muri
 
 '''
 MAX_MAP e' la grandezza della mappa
@@ -99,6 +100,16 @@ def elabora_sensore(theta, sensore):
             muri_lock.acquire()
             if not (prima_casella, seconda_casella) in muri and not (seconda_casella, prima_casella) in muri:
                 muri.append((prima_casella, seconda_casella))
+                if sensore.id == 5 or sensore.id == 4: #Se il muro e' alla mia destra
+                    if muri is muri1:
+                        muri1_passato.append(True)
+                    else:
+                        muri2_passato.append(True)
+                else
+                    if muri is muri1:
+                        muri1_passato.append(False)
+                    else:
+                        muri2_passato.append(False)
             muri_lock.release()
             #imposto le caselle tra la mia posizione e il rilevamento a 0 (vuoto)
             dx, dy = math.cos(theta+sensore.offset), math.sin(theta+sensore.offset)
@@ -207,6 +218,7 @@ def pianifica(centers1, centers2):
         muri_lock.release()
     followRoute(route)
 
+
 def followRoute(route):
     for nodo in route:
         vai_a_nodo(nodo)
@@ -221,22 +233,9 @@ def vai_a_nodo(nodo):
         robot_lock.acquire()
     robot_lock.release()
 
-def take_control():
-    grid_lock.acquire()
-    clusters1 = cluster.find_clusters(grid1)
-    clusters2 = cluster.find_clusters(grid2)
-    grid_lock.release()
-    cl1 = []
-    for l in clusters1:
-        if not (MAX_MAP-1, MAX_MAP-1) in l:
-            cl1.append(l)
-    cl2 = []
-    for l in clusters2:
-        if not (MAX_MAP-1, MAX_MAP-1) in l:
-            cl2.append(l)
-    centers1 = cluster.find_centers(cl1)
-    centers2 = cluster.find_centers(cl2)
-    pianifica(centers1, centers2)
+def find_next_token():
+    muri_passato = muri1_passato if muri is muri1 else muri2_passato
+    return cluster_muri.trova_muro_vicino((robot[0], robot[1]), muri, murin_passato)
 
 def routine_movimento():
     muovi = True
@@ -255,20 +254,26 @@ def routine_movimento():
         mov.goForward()
     sensori_lock.release()
 
-def loop_routine_movimento():
-    robot_lock.acquire()
-    grid_lock.acquire()
-    while not (robot[0] == 200 and robot[1] == 200 and grid is grid1):
-        grid_lock.release()
-        robot_lock.release()
-        routine_movimento()
-        if rileva_vittima():
-            sgancia()
+def loop_routine_movimento(nothing):
+    start = (200, 200)
+    mov.goForward()
+    while True:
         robot_lock.acquire()
         grid_lock.acquire()
-    robot_lock.release()
-    grid_lock.release()
-    take_control()
+        while not ((math.floor(robot[0]) == start[0] and math.floor(robot[1]) == start[1]) or (math.ceil(robot[0]) == start[0] and math.ceil(robot[1]) == start[1]) and grid is grid1):
+            grid_lock.release()
+            robot_lock.release()
+            routine_movimento()
+            if rileva_vittima():
+                sgancia()
+            robot_lock.acquire()
+            grid_lock.acquire()
+        robot_lock.release()
+        grid_lock.release()
+        start = find_next_token()
+        if start == None:
+            break
+        move_to(start)
 
 def rileva_vittima():
     temp, val = sensore_temperatura.leggi()
@@ -317,17 +322,21 @@ routine = True
     ^     ^
     |     |
     -------
+
+murin_passato indica se si e' gia' passati a sinistra di un determinato muro
 '''
 muri_lock = thread.allocate_lock()
 muri1 = []
 muri2 = []
+muri1_passato = []
+muri2_passato = []
 muri = muri1
 
 theta_lock = thread.allocate_lock()
 theta = sensore_angolo.leggi()*math.pi/180;
 
 distanza_precedente = sensore_distanza_p.leggi();
-loop_movimento_t = thread.start_new_thread(loop_routine_movimento)
+loop_movimento_t = thread.start_new_thread(loop_routine_movimento, (None, None))
 
 while True:
     for s in sensori_distanza:
