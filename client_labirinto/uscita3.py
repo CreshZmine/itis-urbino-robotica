@@ -280,35 +280,35 @@ def move_to(target):
     followRoute(g.risolvi(muri, (robot[0], robot[1]), target, MAX_MAP, MAX_MAP, grid))
 
 def loop_routine_movimento(nothing, nothing1):
-        start = (200, 200)
-        mov.goForward()
-    for i in range(2):
-        while True:
-            robot_lock.acquire()
-            grid_lock.acquire()
-            while not ((math.floor(robot[0]) == start[0] and math.floor(robot[1]) == start[1]) or (math.ceil(robot[0]) == start[0] and math.ceil(robot[1]) == start[1]) and grid is grid1):
-                grid_lock.release()
-                robot_lock.release()
-                routine_movimento()
-                if rileva_vittima():
-                    sgancia()
-                robot_lock.acquire()
-                grid_lock.acquire()
-            robot_lock.release()
-            grid_lock.release()
-            start = find_next_token()
-            if start == None:
-                break
-            move_to(start)
-        #Vai al secondo piano
-        move_to(rampa_tile1)
-        move_to(rampa_tile2)
-        #Rifai la stessa cosa del primo nel secondo
-        start = find_next_token()
-    #Torna all'inizio
-    move_to(rampa_tile2)
-    move_to(rampa_tile1)
-    move_to((200,200))
+	start = (200, 200)
+	mov.goForward()
+	for i in range(2):
+		while True:
+			robot_lock.acquire()
+			grid_lock.acquire()
+			while not ((math.floor(robot[0]) == start[0] and math.floor(robot[1]) == start[1]) or (math.ceil(robot[0]) == start[0] and math.ceil(robot[1]) == start[1]) and grid is grid1):
+				grid_lock.release()
+				robot_lock.release()
+				routine_movimento()
+				if rileva_vittima():
+					sgancia()
+				robot_lock.acquire()
+				grid_lock.acquire()
+			robot_lock.release()
+			grid_lock.release()
+			start = find_next_token()
+			if start == None:
+				break
+			move_to(start)
+		#Vai al secondo piano
+		move_to(rampa_tile1)
+		move_to(rampa_tile2)
+		#Rifai la stessa cosa del primo nel secondo
+		start = find_next_token()
+	#Torna all'inizio
+	move_to(rampa_tile2)
+	move_to(rampa_tile1)
+	move_to((200,200))
 
 def rileva_vittima():
     temp, val = sensore_temperatura.leggi()
