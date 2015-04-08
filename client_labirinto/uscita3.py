@@ -105,7 +105,7 @@ def elabora_sensore(theta, sensore):
                         muri1_passato.append(True)
                     else:
                         muri2_passato.append(True)
-                else
+                else:
                     if muri is muri1:
                         muri1_passato.append(False)
                     else:
