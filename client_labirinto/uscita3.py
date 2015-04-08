@@ -92,7 +92,7 @@ def elabora_sensore(theta, sensore):
         y_coor_approx = int(math.ceil(y_coor)) if (y_coor % 1) > 0.5 else int(math.floor(y_coor))
         prima_casella = (math.trunc(x_coor), math.trunc(y_coor))
         if math.sqrt((x_coor_approx-x_coor)**2+(y_coor_approx-y_coor)**2) > 1/15.0: #Spigolo di 2 centimetri?
-            if maht.fabs(y_coor_approx - y_coor) < maht.fabs(x_coor_approx - x_coor):
+            if math.fabs(y_coor_approx - y_coor) < math.fabs(x_coor_approx - x_coor):
                 seconda_casella = (prima_casella[0], prima_casella[1] + (1 if (y_coor % 1) > 0.5 else -1))
             else:
                 seconda_casella = (prima_casella[0] + (1 if (x_coor % 1) > 0.5 else -1), prima_casella[1])
@@ -103,7 +103,7 @@ def elabora_sensore(theta, sensore):
             #imposto le caselle tra la mia posizione e il rilevamento a 0 (vuoto)
             dx, dy = math.cos(theta+sensore.offset), math.sin(theta+sensore.offset)
             cx, cy = dx, dy
-            for i in range(dist):
+            for i in range(int(math.floor(dist))):
                 grid_lock.acquire()
                 try:
                     grid[int(x_sensore + cx)][int(y_sensore + cy)] = 1
@@ -255,7 +255,7 @@ def routine_movimento():
         mov.goForward()
     sensori_lock.release()
 
-def loop_routine_movimento():
+def loop_routine_movimento(nothing, nothing1):
     robot_lock.acquire()
     grid_lock.acquire()
     while not (robot[0] == 200 and robot[1] == 200 and grid is grid1):
@@ -324,10 +324,11 @@ muri2 = []
 muri = muri1
 
 theta_lock = thread.allocate_lock()
-theta = sensore_angolo.leggi()*math.pi/180;
+ret,chk = sensore_angolo.leggi()
+theta = ret*math.pi/180;
 
 distanza_precedente = sensore_distanza_p.leggi();
-loop_movimento_t = thread.start_new_thread(loop_routine_movimento)
+loop_movimento_t = thread.start_new_thread(loop_routine_movimento, (None,None))
 
 while True:
     for s in sensori_distanza:
