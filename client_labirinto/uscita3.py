@@ -225,8 +225,29 @@ def followRoute(route):
 
 def vai_a_nodo(nodo):
     robot_lock.acquire()
-    angle_between = math.atan2(nodo[1] - robot[1], nodo[0] - robot[0]) - theta
-    mov.goGrad(angle_between*180/math.pi)
+    dx = nodo[0] - robot[0]
+    dy = nodo[1] - robot[1]
+    if theta > -0.1 and theta < 0.1:
+        while math.fabs(nodo[0] - robot[0]) < 0.5:
+            if dx > 0:
+                mov.goForward()
+            else:
+                mov.goBack()
+        if dy > 0:
+            mov.goLeft()
+        else:
+            mov.goRight()
+    if theta > maht.pi-0.1 and theta < math.pi+0.1:
+        while math.fabs(nodo[0] - robot[0]) < 0.5:
+            if dx > 0:
+                mov.goBack()
+            else:
+                mov.goForward()
+        if dy > 0:
+            mov.goRight()
+        else:
+            mov.goLeft()
+
     while math.sqrt((nodo[0]-robot[0])**2+(nodo[1]-robot[1])**2) > 1:
         robot_lock.release()
         mov.goForward()
@@ -253,6 +274,10 @@ def routine_movimento():
     if muovi:
         mov.goForward()
     sensori_lock.release()
+
+def move_to(target):
+    g = grafo_cartesiano.GrafoCartesiano()
+    followRoute(g.risolvi(muri, (robot[0], robot[1]), target, MAX_MAP, MAX_MAP, grid))
 
 def loop_routine_movimento(nothing, nothing1):
         start = (200, 200)
