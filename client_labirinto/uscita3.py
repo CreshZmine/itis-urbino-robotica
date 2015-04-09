@@ -255,7 +255,7 @@ def vai_a_nodo(nodo):
     robot_lock.release()
 
 def find_next_token():
-    muri_passato = muri1_passato if muri is muri1 else muri2_passato
+    murin_passato = muri1_passato if muri is muri1 else muri2_passato
     return cluster_muri.trova_muro_vicino((robot[0], robot[1]), muri, murin_passato)
 
 def routine_movimento():
