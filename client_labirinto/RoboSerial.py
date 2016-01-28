@@ -1,5 +1,5 @@
 # Raspberry - RoboSerial | Corso robotica 2014/15 - ITIS E. Mattei Urbino
-# Scritto per Python 2.7
+# Scritto per Python 3.5
 # Per installare PySerial -> python -m pip install pyserial
 
 import serial
@@ -7,10 +7,10 @@ import serial
 class RoboSerial:
 	def __init__(self):
 		# Impostazioni di connessione
-		self.port = "" # Porta seriale in uso
-		self.defPort = "/dev/ttyAMA0" # Porta seriale principale
-		self.altPort = "COM2" # Porta seriale alternativa (attualmente usate per la simulazione su Windows)
-		self.baud = 115200 # Baudrate per la comunicazione seriale
+		self.port = ""										# Porta seriale in uso
+		self.defPort = "/dev/ttyAMA0"			# Porta seriale principale
+		self.altPort = "COM2"							# Porta seriale alternativa (attualmente usate per la simulazione su Windows)
+		self.baud = 115200								# Baudrate per la comunicazione seriale
 
 		# Impostazioni di comunicazione
 		self.charStarter="#" # Carattere che determina l'inizio della comunicazione
