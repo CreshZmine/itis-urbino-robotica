@@ -11,6 +11,7 @@ class RoboSerial:
 		self.defPort = "/dev/ttyAMA0" # Porta seriale principale
 		self.altPort = "COM2" # Porta seriale alternativa (attualmente usate per la simulazione su Windows)
 		self.baud = 115200 # Baudrate per la comunicazione seriale
+		self.timeout = 0.5 # Timeout
 
 		# Impostazioni di comunicazione
 		self.charStarter="#" # Carattere che determina l'inizio della comunicazione
@@ -40,13 +41,13 @@ class RoboSerial:
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
 		# !ATTENZIONE! -> Il Raspberry PI quando la porta seriale UART0 viene inizializzata invia un impulso negativo di 32us sul TX
 		try:
-			self.ser = serial.Serial(self.defPort, self.baud)  # Tentativo di connessione con la porta principale
+			self.ser = serial.Serial(self.defPort, self.baud, timeout=self.timeout)  # Tentativo di connessione con la porta principale
 			self.port=self.defPort
 			return True
 		except:
 			# In caso di errore con la porta principale
 			try:
-				self.ser = serial.Serial(self.altPort, self.baud)  # Tentativo di connessione con la porta alternativa
+				self.ser = serial.Serial(self.altPort, self.baud, timeout=self.timeout)  # Tentativo di connessione con la porta alternativa
 				self.port=self.altPort
 				return True
 			except:
