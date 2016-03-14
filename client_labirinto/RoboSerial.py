@@ -59,7 +59,7 @@ class RoboSerial:
 		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
 		# !ATTENZIONE! -> Su Raspberry PI quando la porta seriale UART0 viene inizializzata viene inviato un impulso negativo di 32us sul TX
 		try:
-			self.ser = serial.Serial(portCon, self.baud)  # Tentativo di connessione
+			self.ser = serial.Serial(portCon, self.baud, timeout=self.timeout)  # Tentativo di connessione
 			self.port=portCon
 		except:
 			# In caso di errore
