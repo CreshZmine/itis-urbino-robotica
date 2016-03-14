@@ -1,5 +1,5 @@
 # Raspberry - RoboSerial | Corso robotica 2014/15 - ITIS E. Mattei Urbino
-# Scritto per Python 2.7
+# Scritto per Python 3.5
 # Per installare PySerial -> python -m pip install pyserial
 
 import serial
