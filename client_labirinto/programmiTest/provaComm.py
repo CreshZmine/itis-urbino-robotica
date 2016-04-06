@@ -1,4 +1,5 @@
 import RoboSerial
+import time
 
 robo = RoboSerial.RoboSerial()
 
@@ -12,3 +13,4 @@ print robo.goLeft()
 print robo.goStop()
 for i in range(1, 10):
     print robo.requestSensor(i)
+
