@@ -7,18 +7,18 @@ import serial
 class RoboSerial:
 	def __init__(self):
 		# Impostazioni di connessione
-		self.port = "" # Porta seriale in uso
-		self.defPort = "/dev/ttyAMA0" # Porta seriale principale
-		self.altPort = "COM2" # Porta seriale alternativa (attualmente usate per la simulazione su Windows)
-		self.baud = 115200 # Baudrate per la comunicazione seriale
-		self.timeout = 0.5 # Timeout
+		self.port = "" 						# Porta seriale in uso
+		self.defPort = "/dev/ttyAMA0"		# Porta seriale principale
+		self.altPort = "COM2"				# Porta seriale alternativa (attualmente usate per la simulazione su Windows)
+		self.baud = 115200					# Baudrate per la comunicazione seriale
+		self.timeout = 0.5					# Timeout
 
 		# Impostazioni di comunicazione
-		self.charStarter="#" # Carattere che determina l'inizio della comunicazione
-		self.charTerminator="*" # Carattere che determina la fine della comunicazione
+		self.charStarter="#"				# Carattere che determina l'inizio della comunicazione (non utilizzato)
+		self.charTerminator="*"				# Carattere che determina la fine della comunicazione
 
 		# Variabili aggiuntive
-		self.ser = None # Oggetto per comunicazione seriale
+		self.ser = None						# Oggetto per comunicazione seriale
 
 		# Ultimi messaggi inviati/ricevuti
 		self.lastReceive = ""
@@ -27,6 +27,9 @@ class RoboSerial:
 		# Buffer di comunicazione
 		self.receiveBuffer = ""
 		self.sendBuffer = ""
+
+		# Apertura automatica del canale di comunicazione
+		self.openConnection()
 
 	def __del__(self):
 		# Chiusura connessione seriale
@@ -38,21 +41,21 @@ class RoboSerial:
 	#######################################
 
 	def openConnection(self):
-		# NOTA -> Se non e' stato possibile aprire la comunicazione seriale ser verra' settato a null
-		# !ATTENZIONE! -> Il Raspberry PI quando la porta seriale UART0 viene inizializzata invia un impulso negativo di 32us sul TX
+		# !NOTA! -> Il Raspberry PI quando la porta seriale UART0 viene inizializzata invia un impulso negativo di 32us sul TX
 		try:
-			self.ser = serial.Serial(self.defPort, self.baud, timeout=self.timeout)  # Tentativo di connessione con la porta principale
-			self.port=self.defPort
+			self.ser = serial.Serial(self.defPort, self.baud, timeout=self.timeout) 		# Tentativo di connessione con la porta principale
+			self.port=self.defPort															# Rende la porta principale la porta di comunicazione corrente
 			return True
 		except:
 			# In caso di errore con la porta principale
+			# Tenta di usare la porta alternativa
 			try:
-				self.ser = serial.Serial(self.altPort, self.baud, timeout=self.timeout)  # Tentativo di connessione con la porta alternativa
-				self.port=self.altPort
+				self.ser = serial.Serial(self.altPort, self.baud, timeout=self.timeout)  	# Tentativo di connessione con la porta alternativa
+				self.port=self.altPort														# Rende la porta alternativa la porta di comunicazione corrente
 				return True
 			except:
 				# In caso di errore con la porta alternativa
-				self.ser=None # Imposta "ser" a null per mancata connessione
+				self.ser=None 																# Imposta "ser" a null per mancata connessione
 				return False
 
 	def openConnectionPort(self, portCon):
@@ -86,23 +89,30 @@ class RoboSerial:
 	#######################################
 
 	def receive(self):
+		# Riceve messaggi dal canale seriale
+		# Valori di ritorno:
+		#	-> True se il checksum e' corretto
+		#	-> False se il checksum e' errato o la comunicazione non e' aperta
+
 		if(self.isConnected()):
 			read=""
 			num = 0
 			lenRead = 0
+
+			# Ciclo di lettura dal canale seriale
 			while True:
-				num = self.ser.inWaiting() # Verifica quanti dati stanno per esserre ricevuti
-				lenRead = len(read)-1
-				if (lenRead > 0 and read[lenRead] == self.charTerminator): # Rileva il carattere di fine comunicazione
-					break
+				num = self.ser.inWaiting() 											# Verifica quanti dati stanno per esserre ricevuti
+				lenRead = len(read)-1												# Conto i caratteri letti
+				if (lenRead > 0 and read[lenRead] == self.charTerminator): 			# Rileva il carattere terminatore
+					break															# Fermo il ciclo di lettura
 				elif (num!=0):
-					read+=self.ser.read(num) # Legge dalla seriale
+					read+=self.ser.read(num)										# Legge dalla seriale
 
 			# Manipolazione e verifica del messaggio ricevuto
-			self.receiveBuffer+=read														# Salva il messaggio ricevuto nel buffer
-			read=read.replace(self.charTerminator," ") 										# Rimuove il carattere terminatore della comunicazione
-			self.lastReceive = read 														# La salvo come ultima stringa ricevuta
-			cksum = self.genChecksum16(read[-5], read[-4], read[-3])						# Genero il checksum per la verifica dell'integrita' del messaggio
+			self.receiveBuffer+=read												# Salva il messaggio ricevuto nel buffer
+			read=read.replace(self.charTerminator," ") 								# Rimuove il carattere terminatore della comunicazione
+			self.lastReceive = read 												# La salvo come ultima stringa ricevuta
+			cksum = self.genChecksum16(read[-5], read[-4], read[-3])				# Genero il checksum per la verifica dell'integrita' del messaggio
 
 			# Verifico se il checksum generato corrisponde con quello ricevuto
 			if (cksum == ord(read[-2])):
@@ -114,11 +124,12 @@ class RoboSerial:
 			return False
 
 	def send(self, msg):
+		# Funzione base per l'invio di un messaggiosu canale seriale con aggiunta di terminatore
 		if(self.isConnected()):
-			msg+=self.charTerminator
-			self.sendBuffer+=msg
-			self.lastSend = msg
-			self.ser.write(msg)
+			msg+=self.charTerminator				# Aggiunge il carattere terminatore
+			self.sendBuffer+=msg					# Salva il messaggio nel buffer dei messaggi inviati
+			self.lastSend = msg						# Salva il messaggio come ultimo inviato
+			self.ser.write(msg)						# Invia il messaggio
 
 	def sendCommand(self, cmd, dato):
 		# Schema messaggio generato <comando(1byte)><dato(1byte)><checksum(1byte)><carattere_terminatore(1byte)>
@@ -143,7 +154,7 @@ class RoboSerial:
 			self.ser.write(msg) 							# Invia il messaggio
 
 	def genChecksum(self, cmd, dato):
-		# Calcola il checksum partendo dal comando e dal dato a 8 bit passato
+		# Calcola il checksum partendo dal comando e dal dato a 8 bit
 
 		# Viene prelevato il valore ASCII del carattere
 		cmdA=ord(cmd)
@@ -156,7 +167,7 @@ class RoboSerial:
 		return chsm
 
 	def genChecksum16(self, cmd, dato1, dato0):
-		# Calcola il checksum partendo dal comando e dal dato a 16 bit passato
+		# Calcola il checksum partendo dal comando e dal dato a 16 bit
 		cmdA=ord(cmd)
 
 		# Viene prelevato il valore ASCII del carattere
@@ -287,6 +298,8 @@ class RoboSerial:
 
 	def requestSensor(self, idSens):
 		# Richiede lo stato di un sensore
+		self.goStop()	# Invia un sengale di stop per impedire che il Tiva
+						# ri-esegua l'ultimo comando inviato prima della lettura sensori
 		status = False	# Risultato verifica checksum sulla risposta del Tiva alla richiesta
 
 		if(self.isConnected()):
